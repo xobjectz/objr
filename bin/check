@@ -1,0 +1,4 @@
+grep -R "print(" objr
+grep -R sys objr
+grep -R __import__ objr
+grep -R inspect objr
