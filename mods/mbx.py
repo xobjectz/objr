@@ -12,7 +12,7 @@ import time
 
 
 from objr import Client, Object, Persist
-from objr import find, fmt, fntime, laps, update, write
+from objr import find, fmt, fntime, laps, update, sync
 
 
 MONTH = {

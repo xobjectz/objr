@@ -236,7 +236,7 @@ def read(obj, pth):
 
 def write(obj, pth):
     with disklock:
-        Workdir.cdir(os.path.dirname(pth))
+        cdir(os.path.dirname(pth))
         with open(pth, 'w', encoding='utf-8') as ofile:
             dump(obj, ofile, indent=4)
 
@@ -267,32 +267,6 @@ def __dir__():
         'update',
         'values',
         'write'
-    )
-
-
-__all__ = __dir__()
-# This file is placed in the Public Domain.
-#
-# pylint: disable=C,R,W0105,W0613,E0101,E0402
-
-
-"default values"
-
-
-from .objects import Object
-
-
-"classes"
-
-
-
-
-"interface"
-
-
-def __dir__():
-    return (
-        'Default',
     )
 
 
