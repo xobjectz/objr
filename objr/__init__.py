@@ -50,8 +50,6 @@ def __dir__():
 def __dir2__():
     return (
         'Object',
-        'ObjectDecoder',
-        'ObjectEncoder',
         'construct',
         'dump',
         'dumps',
