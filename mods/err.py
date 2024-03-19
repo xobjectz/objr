@@ -9,9 +9,6 @@
 from objr import Broker, Client, Errors
 
 
-"commands"
-
-
 def err(event):
     nmr = 0
     for bot in Broker.all():

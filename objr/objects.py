@@ -13,7 +13,20 @@ import pathlib
 import _thread
 
 
+"defines"
+
+
 disklock = _thread.allocate_lock()
+
+
+def cdir(pth):
+    if os.path.exists(pth):
+        return
+    pth = pathlib.Path(pth)
+    os.makedirs(pth, exist_ok=True)
+
+
+"classes"
 
 
 class Object:
@@ -29,6 +42,9 @@ class Object:
 
     def __str__(self):
         return str(self.__dict__)
+
+
+"methods"
 
 
 def construct(obj, *args, **kwargs):
@@ -219,11 +235,6 @@ def dumps(*args, **kw):
 
 "utilities"
 
-def cdir(pth) -> None:
-    if os.path.exists(pth):
-        return
-    pth = pathlib.Path(pth)
-    os.makedirs(pth, exist_ok=True)
 
 
 "methods"
@@ -247,11 +258,7 @@ def write(obj, pth):
 def __dir__():
     return (
         'Object',
-        'ObjectDecoder',
-        'ObjectEncoder',
-        'cdir',
         'construct',
-        'disklock',
         'dump',
         'dumps',
         'edit',

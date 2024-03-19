@@ -137,7 +137,6 @@ def main():
     global percall
     Errors.output = cprint
     mods.rss.DEBUG = True
-    mds = ",".join(mods.__dir__())
     nrs = Cfg.index or 1
     nrcommand = len(Client.cmds) or 1
     cli = CLI()

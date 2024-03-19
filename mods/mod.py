@@ -6,25 +6,14 @@
 "available modules"
 
 
-import os
-
-
 from objr import Client
 
 
 from . import __dir__
 
 
-"commands"
-
-
 def mod(event):
-    res = []
-    if os.path.exists("mods"):
-        import mods
-        res.extend(mods.__dir__())
-    res.extend(__dir__())
-    event.reply(",".join(sorted(res)))
+    event.reply(",".join(sorted(__dir__())))
 
 
 Client.add(mod)

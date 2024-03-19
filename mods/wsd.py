@@ -187,18 +187,10 @@
 
 
 from random import SystemRandom
-
-
-from objr import Client
-
-
-"defines"
+from objr   import Client
 
 
 rand = SystemRandom()
-
-
-"commands"
 
 
 def wsd(event):
