@@ -53,7 +53,6 @@ def __dir2__():
         'ObjectDecoder',
         'ObjectEncoder',
         'construct',
-        'disklock',
         'dump',
         'dumps',
         'edit',

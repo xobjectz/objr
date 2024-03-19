@@ -11,9 +11,11 @@ import os
 import pathlib
 import time
 
+from objr import Default, Object
+from objr import disklock, dump, load, fqn, read, search, update, write
 
-from .default import Default
-from .objects import Object, dump, fqn, load, search, update
+
+"classes"
 
 
 class Workdir(Object):
@@ -82,6 +84,58 @@ class Persist(Object):
         return res
 
 
+"methods"
+
+
+def fetch(obj, pth):
+    pth2 = Workdir.store(pth)
+    read(obj, pth2)
+    return Workdir.strip(pth)
+
+
+def ident(obj):
+    return os.path.join(
+                        fqn(obj),
+                        os.path.join(*str(datetime.datetime.now()).split())
+                       )
+
+def last(obj, selector=None):
+    if selector is None:
+        selector = {}
+    result = sorted(
+                    find(fqn(obj), selector),
+                    key=lambda x: fntime(x[0])
+                   )
+    if result:
+        inp = result[-1]
+        update(obj, inp[-1])
+        return inp[0]
+
+
+def read(obj, pth):
+    with disklock:
+        with open(pth, 'r', encoding='utf-8') as ofile:
+            update(obj, load(ofile))
+
+
+def sync(obj, pth=None):
+    if pth is None:
+        pth = ident(obj)
+    pth2 = Workdir.store(pth)
+    write(obj, pth2)
+    return pth
+
+
+def write(obj, pth):
+    with disklock:
+        Workdir.cdir(os.path.dirname(pth))
+        with open(pth, 'w', encoding='utf-8') as ofile:
+            dump(obj, ofile, indent=4)
+
+
+"utilitites"
+
+
 def laps(seconds, short=True):
     txt = ""
     nsec = float(seconds)
@@ -148,53 +202,6 @@ def find(mtc, selector=None, index=None, deleted=False):
         if index is not None and nr != int(index):
             continue
         yield (fnm, obj)
-
-
-"methods"
-
-
-def fetch(obj, pth):
-    pth2 = Workdir.store(pth)
-    read(obj, pth2)
-    return Workdir.strip(pth)
-
-
-def ident(obj):
-    return os.path.join(
-                        fqn(obj),
-                        os.path.join(*str(datetime.datetime.now()).split())
-                       )
-
-def last(obj, selector=None):
-    if selector is None:
-        selector = {}
-    result = sorted(
-                    find(fqn(obj), selector),
-                    key=lambda x: fntime(x[0])
-                   )
-    if result:
-        inp = result[-1]
-        update(obj, inp[-1])
-        return inp[0]
-
-
-def read(obj, pth):
-    with open(pth, 'r', encoding='utf-8') as ofile:
-        update(obj, load(ofile))
-
-
-def sync(obj, pth=None):
-    if pth is None:
-        pth = ident(obj)
-    pth2 = Workdir.store(pth)
-    write(obj, pth2)
-    return pth
-
-
-def write(obj, pth):
-    Workdir.cdir(os.path.dirname(pth))
-    with open(pth, 'w', encoding='utf-8') as ofile:
-        dump(obj, ofile, indent=4)
 
 
 "interface"

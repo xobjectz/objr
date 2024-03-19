@@ -12,7 +12,7 @@ import time as ttime
 
 
 from objr import Broker, Client, Event, Persist, Timer
-from objr import find, laps, launch, sync, update
+from objr import find, laps, launch, update, write
 
 
 def init():
@@ -221,7 +221,7 @@ def tmr(event):
     event.result.append(event.rest)
     timer = Timer(diff, event.show, thrname=event.cmd)
     update(timer, event)
-    sync(timer)
+    write(timer)
     launch(timer.start)
 
 
