@@ -15,8 +15,6 @@ import _thread
 disklock = _thread.allocate_lock()
 
 
-
-
 class Object:
 
     def __contains__(self, key):

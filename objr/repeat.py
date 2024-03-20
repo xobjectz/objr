@@ -10,7 +10,7 @@ import time
 import threading
 
 
-from .thr import launch
+from .thread import launch
 
 
 class Timer:

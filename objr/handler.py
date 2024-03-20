@@ -11,9 +11,10 @@ import threading
 import _thread
 
 
-from .err import Errors
-from .obj import Default, Object
-from .thr import launch
+from .broker import Broker
+from .errors import Errors
+from .object import Default, Object
+from .thread import launch
 
 
 class Event(Default):
@@ -87,6 +88,7 @@ class Client(Handler):
     def __init__(self):
         Handler.__init__(self)
         self.register("command", self.command)
+        Broker.add(self)
 
     @staticmethod
     def add(func):

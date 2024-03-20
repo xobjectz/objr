@@ -6,14 +6,14 @@
 "runtime"
 
 
-from .brk import *
-from .err import *
-from .hdl import *
-from .obj import *
-from .pst import *
-from .rpt import *
-from .thr import *
-from .obj import cdir, spl
+from .broker  import *
+from .errors  import *
+from .handler import *
+from .object  import *
+from .persist import *
+from .repeat  import *
+from .thread  import *
+from .object  import cdir, spl
 
 
 def __dir__():
