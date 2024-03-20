@@ -9,12 +9,11 @@ SYNOPSIS
 
 ::
 
-    >>> from objx import Object
-    >>> from objr import fetch, sync
+    >>> from objr import Object, read, write
     >>> o = Object()
-    >>> path = sync(o)
+    >>> path = write(o)
     >>> oo = Object()
-    >>> fetch(oo, path)
+    >>> read(oo, path)
 
 
 DESCRIPTION
