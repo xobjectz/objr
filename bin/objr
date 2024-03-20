@@ -42,14 +42,14 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objr import Client, Default, Errors, Event, Workdir
-from objr import cmnd, debug, forever, init, parse_cmd
+from objr import Broker, Client, Default, Errors, Event, Workdir
+from objr import cmnd, debug, parse_cmd, spl
 
 
 Cfg         = Default()
 Cfg.mod     = "cmd,mod"
 Cfg.name    = "objr"
-Cfg.version = "1"
+Cfg.version = "102"
 Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
 Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Workdir.wd = Cfg.wd
@@ -65,6 +65,10 @@ dte = time.ctime(time.time()).replace("  ", " ")
 
 
 class Console(Client):
+
+    def __init__(self):
+        Client.__init__(self)
+        Broker.add(self)
 
     def announce(self, txt):
         pass
@@ -109,6 +113,20 @@ def daemon(pidfile, verbose=False):
         fds.write(str(os.getpid()))
 
 
+def init(pkg, modstr, disable="", wait=False):
+    mds = []
+    for modname in spl(modstr):
+        if modname in spl(disable):
+            continue
+        module = getattr(pkg, modname, None)
+        if not module:
+            continue
+        if "init" in dir(module):
+            module.init()
+            mds.append(module)
+    return mds
+
+
 def privileges(username):
     pwnam = pwd.getpwnam(username)
     os.setgid(pwnam.pw_gid)
@@ -131,10 +149,9 @@ def wrap(func):
 
 
 def main():
-    Errors.enable(print)
     Workdir.skel()
+    Errors.enable(print)
     parse_cmd(Cfg, " ".join(sys.argv[1:]))
-    readline.redisplay()
     if 'a' in Cfg.opts:
         Cfg.mod = ",".join(mods.__dir__())
     if "v" in Cfg.opts:
@@ -148,13 +165,15 @@ def main():
         daemon(Cfg.pidfile, "v" in Cfg.opts)
         privileges(Cfg.user)
         init(mods, Cfg.mod, Cfg.sets.dis, True)
-        forever()
+        while 1:
+            time.sleep(1.0)
         return
     if "c" in Cfg.opts:
         init(mods, Cfg.mod, Cfg.sets.dis, True)
         csl = Console()
         csl.start()
-        forever()
+        while 1:
+            time.sleep(1.0)
         return
     if Cfg.otxt:
         return cmnd(Cfg.otxt, print)

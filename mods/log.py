@@ -3,7 +3,7 @@
 # pylint: disable=R,C,E0402
 
 
-"llog text"
+"log text"
 
 
 import time

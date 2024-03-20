@@ -15,9 +15,6 @@ from objr import Broker, Client, Event, Persist, Timer
 from objr import find, laps, launch, update, write
 
 
-"defines"
-
-
 def init():
     for fnm, obj in find("timer"):
         if "time" not in obj:
@@ -63,9 +60,6 @@ class NoDate(Exception):
 
 
 Persist.add(Timer)
-
-
-"utilities"
 
 
 def extract_date(daystr):

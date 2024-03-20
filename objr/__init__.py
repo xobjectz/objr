@@ -6,12 +6,14 @@
 "runtime"
 
 
+from .brk import *
+from .err import *
 from .hdl import *
 from .obj import *
 from .pst import *
 from .rpt import *
-from .run import *
 from .thr import *
+from .obj import cdir, spl
 
 
 def __dir__():
@@ -27,6 +29,7 @@ def __dir__():
         'Timer',
         'Thread',
         'Workdir',
+        'cdir',
         'cmnd',
         'debug',
         'fetch',

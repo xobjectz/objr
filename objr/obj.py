@@ -15,11 +15,6 @@ import _thread
 disklock = _thread.allocate_lock()
 
 
-def cdir(pth):
-    if os.path.exists(pth):
-        return
-    pth = pathlib.Path(pth)
-    os.makedirs(pth, exist_ok=True)
 
 
 class Object:
@@ -236,6 +231,21 @@ class Default(Object):
 
 
 "interface"
+
+
+def cdir(pth):
+    if os.path.exists(pth):
+        return
+    pth = pathlib.Path(pth)
+    os.makedirs(pth, exist_ok=True)
+
+
+def spl(txt):
+    try:
+        res = txt.split(',')
+    except (TypeError, ValueError):
+        res = txt
+    return [x for x in res if x]
 
 
 def __dir__():

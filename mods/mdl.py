@@ -11,7 +11,7 @@ import time
 
 
 from objr import Broker, Event, Object, Repeater
-from objr import construct, keys,  laps, launch
+from objr import construct, keys, laps, launch
 
 
 def __dir__():

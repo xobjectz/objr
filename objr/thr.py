@@ -12,7 +12,7 @@ import time
 import types
 
 
-from .run import Errors
+from .err import Errors
 
 
 class Thread(threading.Thread):

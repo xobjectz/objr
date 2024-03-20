@@ -11,6 +11,11 @@ import importlib
 import os
 
 
+SKIP = [
+    "run"
+]
+
+
 modules = []
 
 
@@ -25,9 +30,12 @@ def import_pkg(dname, pname=""):
         if not pth.endswith(".py"):
             continue
         nam = pth[:-3]
+        if nam in SKIP:
+            continue
         if pname:
             name = f"{pname}.{nam}"
         importlib.import_module(name)
         modules.append(nam)
+
 
 import_pkg(os.path.dirname(__file__), "mods")
