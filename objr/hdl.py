@@ -11,13 +11,9 @@ import threading
 import _thread
 
 
-from .default import Default
-from .objects import Object
-from .runtime import Broker, Errors, parse_cmd
-from .threads import launch
-
-
-"classes"
+from .obj import Default, Object
+from .run import Broker, Errors, parse_cmd
+from .thr import launch
 
 
 class Event(Default):
@@ -120,9 +116,6 @@ class Client(Handler):
     def show(self, evt):
         for txt in evt.result:
             self.say(evt.channel, txt)
-
-
-"utilities"
 
 
 def cmnd(txt, out):

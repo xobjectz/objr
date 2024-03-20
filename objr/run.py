@@ -12,8 +12,7 @@ import traceback
 import _thread
 
 
-from .default import Default
-from .objects import Object, keys, values
+from .obj import Default, Object, keys, values
 
 
 rpr = object.__repr__

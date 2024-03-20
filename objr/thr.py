@@ -12,10 +12,7 @@ import time
 import types
 
 
-from .runtime import Errors
-
-
-"classes"
+from .run import Errors
 
 
 class Thread(threading.Thread):
@@ -48,9 +45,6 @@ class Thread(threading.Thread):
             Errors.add(exc)
             if args and "ready" in dir(args[0]):
                 args[0].ready()
-
-
-"utilitites"
 
 
 def launch(func, *args, **kwargs):

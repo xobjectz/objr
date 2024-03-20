@@ -12,10 +12,7 @@ import pathlib
 import time
 
 
-from objr import Default, Object, fqn, read, search, update, write
-
-
-"classes"
+from .obj import Default, Object, fqn, read, search, update, write
 
 
 class Workdir(Object):
@@ -84,45 +81,6 @@ class Persist(Object):
         return res
 
 
-"methods"
-
-
-def fetch(obj, pth):
-    pth2 = Workdir.store(pth)
-    read(obj, pth2)
-    return Workdir.strip(pth)
-
-
-def ident(obj):
-    return os.path.join(
-                        fqn(obj),
-                        os.path.join(*str(datetime.datetime.now()).split())
-                       )
-
-def last(obj, selector=None):
-    if selector is None:
-        selector = {}
-    result = sorted(
-                    find(fqn(obj), selector),
-                    key=lambda x: fntime(x[0])
-                   )
-    if result:
-        inp = result[-1]
-        update(obj, inp[-1])
-        return inp[0]
-
-
-def sync(obj, pth=None):
-    if pth is None:
-        pth = ident(obj)
-    pth2 = Workdir.store(pth)
-    write(obj, pth2)
-    return pth
-
-
-"utilitites"
-
-
 def laps(seconds, short=True):
     txt = ""
     nsec = float(seconds)
@@ -189,6 +147,39 @@ def find(mtc, selector=None, index=None, deleted=False):
         if index is not None and nr != int(index):
             continue
         yield (fnm, obj)
+
+
+def fetch(obj, pth):
+    pth2 = Workdir.store(pth)
+    read(obj, pth2)
+    return Workdir.strip(pth)
+
+
+def ident(obj):
+    return os.path.join(
+                        fqn(obj),
+                        os.path.join(*str(datetime.datetime.now()).split())
+                       )
+
+def last(obj, selector=None):
+    if selector is None:
+        selector = {}
+    result = sorted(
+                    find(fqn(obj), selector),
+                    key=lambda x: fntime(x[0])
+                   )
+    if result:
+        inp = result[-1]
+        update(obj, inp[-1])
+        return inp[0]
+
+
+def sync(obj, pth=None):
+    if pth is None:
+        pth = ident(obj)
+    pth2 = Workdir.store(pth)
+    write(obj, pth2)
+    return pth
 
 
 "interface"

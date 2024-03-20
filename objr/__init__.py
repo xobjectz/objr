@@ -6,13 +6,12 @@
 "runtime"
 
 
-from .default import *
-from .handler import *
-from .objects import *
-from .persist import *
-from .repeats import *
-from .runtime import *
-from .threads import *
+from .hdl import *
+from .obj import *
+from .pst import *
+from .rpt import *
+from .run import *
+from .thr import *
 
 
 def __dir__():
