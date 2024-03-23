@@ -12,7 +12,7 @@ import pathlib
 import time
 
 
-from .object import Default, Object, fqn, read, search, update, write
+from objr.object import Default, Object, fqn, read, search, update, write
 
 
 class Workdir(Object):
