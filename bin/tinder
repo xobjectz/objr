@@ -21,9 +21,12 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objr import Default, Object, edit, fmt, keys, update
-from objr import Broker, Client, Errors, Event, Workdir
-from objr import debug, laps, last, launch, parse_cmd, spl
+from objr.broker  import Broker
+from objr.errors  import Errors, debug
+from objr.handler import Client, Event, parse_cmd
+from objr.object  import Default, Object, edit, fmt, keys, spl, update
+from objr.persist import Persist, Workdir, laps, last
+from objr.thread  import launch
 
 
 STARTTIME = time.time()
