@@ -6,7 +6,7 @@
 "slogan"
 
 
-from objr import Client
+from objr.handler import Client
 
 
 TXT = """By law, with the use of poison, killing, torturing, castrating, destroying,

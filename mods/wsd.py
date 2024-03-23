@@ -187,7 +187,9 @@
 
 
 from random import SystemRandom
-from objr   import Client
+
+
+from objr.handler import Client
 
 
 rand = SystemRandom()

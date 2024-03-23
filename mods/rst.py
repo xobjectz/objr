@@ -14,7 +14,10 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from objr import Default, Errors, Object, Persist, Workdir, debug, launch
+from objr.errors  import Errors, debug
+from objr.object  import Default, Object
+from objr.persist import Persist, Workdir
+from objr.thread  import launch
 
 
 def init():

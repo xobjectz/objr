@@ -33,7 +33,7 @@ OPTIONS
 import getpass
 import os
 import pwd
-import readline
+import readline # pylint: disable=W0611
 import sys
 import termios
 import time
@@ -42,8 +42,12 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objr import Broker, Client, Default, Errors, Event, Workdir
-from objr import cmnd, debug, parse_cmd, spl
+from objr.broker  import Broker
+from objr.errors  import debug
+from objr.handler import Client, Event, cmnd, parse_cmd
+from objr.object  import Default, spl
+from objr.errors  import Errors
+from objr.persist import Workdir
 
 
 Cfg         = Default()

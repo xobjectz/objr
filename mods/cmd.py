@@ -6,7 +6,7 @@
 "list of commands"
 
 
-from objr import Client
+from objr.handler import Client
 
 
 def cmd(event):

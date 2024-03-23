@@ -6,7 +6,7 @@
 "available modules"
 
 
-from objr import Client
+from objr.handler import Client
 
 
 from . import __dir__

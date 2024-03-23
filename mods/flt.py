@@ -6,8 +6,9 @@
 "fleet"
 
 
-from objr import Broker, Client, name
-
+from objr.broker  import Broker
+from objr.handler import Client
+from objr.thread  import name
 
 def flt(event):
     try:

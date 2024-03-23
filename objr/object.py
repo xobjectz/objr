@@ -228,9 +228,6 @@ class Default(Object):
         return self.__dict__.get(key, self.__default__)
 
 
-"interface"
-
-
 def cdir(pth):
     if os.path.exists(pth):
         return
@@ -244,6 +241,9 @@ def spl(txt):
     except (TypeError, ValueError):
         res = txt
     return [x for x in res if x]
+
+
+"interface"
 
 
 def __dir__():

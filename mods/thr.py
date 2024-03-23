@@ -10,7 +10,9 @@ import threading
 import time
 
 
-from objr import Client, Object, laps, update
+from objr.object  import Object, update
+from objr.handler import Client
+from objr.persist import laps
 
 
 STARTTIME = time.time()

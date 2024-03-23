@@ -13,7 +13,10 @@ import threading
 import time
 
 
-from objr import Broker, Client, Object, launch
+from objr.broker import Broker
+from objr.handler import Client
+from objr.object import Object
+from objr.thread import launch
 
 
 def init():

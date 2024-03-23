@@ -9,7 +9,9 @@
 import time
 
 
-from objr import Client, Object, Persist, fntime, find, laps, write
+from objr.handler import Client
+from objr.object  import Object
+from objr.persist import Persist, fntime, find, laps, sync
 
 
 class NoDate(Exception):
@@ -36,7 +38,7 @@ def dne(event):
     for fnm, obj in find('todo', selector):
         nmr += 1
         obj.__deleted__ = True
-        write(obj, fnm)
+        sync(obj, fnm)
         event.reply('ok')
         break
     if not nmr:
@@ -58,7 +60,7 @@ def tdo(event):
         return
     obj = Todo()
     obj.txt = event.rest
-    write(obj)
+    sync(obj)
     event.reply('ok')
 
 

@@ -9,7 +9,9 @@
 import time
 
 
-from objr import Client, Object, Persist, find, fntime, laps, write
+from objr.handler import Client
+from objr.object  import Object
+from objr.persist import Persist, find, fntime, laps, sync
 
 
 class Log(Object):
@@ -34,7 +36,7 @@ def log(event):
         return
     obj = Log()
     obj.txt = event.rest
-    write(obj)
+    sync(obj)
     event.reply('ok')
 
 

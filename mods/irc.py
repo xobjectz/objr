@@ -18,8 +18,12 @@ import time
 import _thread
 
 
-from objr import Broker, Client, Default, Errors, Object, Persist, Event
-from objr import debug, edit, fmt, keys, last, launch, sync
+from objr.broker  import Broker
+from objr.handler import Client, Event
+from objr.errors  import Errors, debug
+from objr.object  import Default, Object, edit, fmt, keys
+from objr.persist import Persist, last, sync
+from objr.thread  import launch
 
 
 NAME    = __file__.split(os.sep)[-3]
