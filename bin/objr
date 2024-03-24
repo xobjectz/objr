@@ -152,9 +152,14 @@ def wrap(func):
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old2)
 
 
+def ver(event):
+    event.reply(f"{Cfg.name.upper()} {Cfg.version}")
+
+
 def main():
     Workdir.skel()
     Errors.enable(print)
+    Client.add(ver)
     parse_cmd(Cfg, " ".join(sys.argv[1:]))
     if 'a' in Cfg.opts:
         Cfg.mod = ",".join(mods.__dir__())
