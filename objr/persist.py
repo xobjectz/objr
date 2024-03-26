@@ -3,7 +3,11 @@
 # pylint: disable=C,R,W0105,E0402
 
 
-"persistence"
+"""persistence
+
+Object persistence.
+
+"""
 
 
 import datetime
@@ -12,48 +16,51 @@ import pathlib
 import time
 
 
-from objr.object import Default, Object, fqn, read, search, update, write
+from objr.object import Default, Object, cdir, fqn, read, search, update, write
 
 
 class Workdir(Object):
 
+    "directory to store objects."
+
     wd = ""
 
     @staticmethod
-    def cdir(pth) -> None:
-        if os.path.exists(pth):
-            return
-        pth = pathlib.Path(pth)
-        os.makedirs(pth, exist_ok=True)
-
-    @staticmethod
     def skel():
-        Workdir.cdir(os.path.join(Workdir.wd, "store", ""))
+        "create directory,"
+        cdir(os.path.join(Workdir.wd, "store", ""))
 
     @staticmethod
     def store(pth=""):
+        "return objects directory."
         return os.path.join(Workdir.wd, "store", pth)
 
     @staticmethod
     def strip(pth, nmr=3):
+        "reduce to path with directory."
         return os.sep.join(pth.split(os.sep)[-nmr:])
 
     @staticmethod
     def types():
+        "return types stored."
         return os.listdir(Workdir.store())
 
 
 class Persist(Object):
 
+    "whitelist of types saveable to disk."
+
     classes = Object()
 
     @staticmethod
     def add(clz):
+        "add class to whitelist."
         name = str(clz).split()[1][1:-2]
         setattr(Persist.classes, name, clz)
 
     @staticmethod
     def fns(mtc=""):
+        "show list of files."
         dname = ''
         pth = Workdir.store(mtc)
         for rootdir, dirs, _files in os.walk(pth, topdown=False):
@@ -67,6 +74,7 @@ class Persist(Object):
 
     @staticmethod
     def long(name):
+        "match from single name to long name."
         split = name.split(".")[-1].lower()
         res = name
         for named in Persist.classes:
@@ -82,6 +90,7 @@ class Persist(Object):
 
 
 def laps(seconds, short=True):
+    "show elapsed time."
     txt = ""
     nsec = float(seconds)
     if nsec < 1:
@@ -121,6 +130,7 @@ def laps(seconds, short=True):
 
 
 def fntime(daystr):
+    "convert file name to it's saved time."
     daystr = daystr.replace('_', ':')
     datestr = ' '.join(daystr.split(os.sep)[-2:])
     if '.' in datestr:
@@ -134,6 +144,7 @@ def fntime(daystr):
 
 
 def find(mtc, selector=None, index=None, deleted=False):
+    "find object matching the selector dict."
     clz = Persist.long(mtc)
     nr = -1
     for fnm in sorted(Persist.fns(clz), key=fntime):
@@ -150,18 +161,21 @@ def find(mtc, selector=None, index=None, deleted=False):
 
 
 def fetch(obj, pth):
+    "read object from disk."
     pth2 = Workdir.store(pth)
     read(obj, pth2)
     return Workdir.strip(pth)
 
 
 def ident(obj):
+    "return an id for an object."
     return os.path.join(
                         fqn(obj),
                         os.path.join(*str(datetime.datetime.now()).split())
                        )
 
 def last(obj, selector=None):
+    "return last object saved."
     if selector is None:
         selector = {}
     result = sorted(
@@ -175,6 +189,7 @@ def last(obj, selector=None):
 
 
 def sync(obj, pth=None):
+    "sync object to disk."
     if pth is None:
         pth = ident(obj)
     pth2 = Workdir.store(pth)

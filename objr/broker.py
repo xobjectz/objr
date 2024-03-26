@@ -43,23 +43,28 @@ class Broker:
 
     @staticmethod
     def add(obj):
+        "add an object to the broker."
         setattr(Broker.objs, rpr(obj), obj)
 
     @staticmethod
     def all():
+        "return all objects."
         return values(Broker.objs)
 
     @staticmethod
     def first():
+        "return first object."
         for key in keys(Broker.objs):
             return getattr(Broker.objs, key)
 
     @staticmethod
     def get(orig):
+        "return object by origin (repr)"
         return getattr(Broker.objs, orig, None)
 
     @staticmethod
     def remove(obj):
+        "remove object from broker"
         delattr(Broker.objs, rpr(obj))
 
 

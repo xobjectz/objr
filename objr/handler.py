@@ -3,7 +3,11 @@
 # pylint: disable=C,R,W0105,W0212,W0613,W0718,E0402,E1102
 
 
-"hander"
+"""event hander
+
+Event handler module
+
+"""
 
 
 import queue
@@ -19,6 +23,8 @@ from objr.thread import launch
 
 class Event(Default):
 
+    "Event class"
+
     def __init__(self):
         Default.__init__(self)
         self._thr    = None
@@ -30,12 +36,15 @@ class Event(Default):
         self.type    = "event"
 
     def ready(self):
+        "event is ready."
         self._ready.set()
 
     def reply(self, txt):
+        "add text to the result"
         self.result.append(txt)
 
     def wait(self):
+        "wait for event to be ready."
         if self._thr:
             self._thr.join()
         self._ready.wait()
@@ -44,6 +53,8 @@ class Event(Default):
 
 class Handler:
 
+    "Handler class"
+
     def __init__(self):
         self.cbs = Object()
         self.queue    = queue.Queue()
@@ -51,6 +62,7 @@ class Handler:
         self.threaded = True
 
     def callback(self, evt):
+        "call callback based on event type."
         func = getattr(self.cbs, evt.type, None)
         if not func:
             evt.ready()
@@ -58,6 +70,7 @@ class Handler:
         evt._thr = launch(func, evt)
 
     def loop(self):
+        "proces events until interrupted."
         while not self.stopped.is_set():
             try:
                 evt = self.poll()
@@ -66,22 +79,29 @@ class Handler:
                 _thread.interrupt_main()
 
     def poll(self):
+        "function to return event."
         return self.queue.get()
 
     def put(self, evt):
+        "put event into the queue."
         self.queue.put_nowait(evt)
 
     def register(self, typ, cbs):
+        "register callback for a type."
         setattr(self.cbs, typ, cbs)
 
     def start(self):
+        "start the event loop."
         launch(self.loop)
 
     def stop(self):
+        "stop the event loop."
         self.stopped.set()
 
 
 class Client(Handler):
+
+    "Client class"
 
     cmds = Object()
 
@@ -92,12 +112,15 @@ class Client(Handler):
 
     @staticmethod
     def add(func):
+        "add command to client."
         setattr(Client.cmds, func.__name__, func)
 
     def announce(self, txt):
+        "announce text."
         self.raw(txt)
 
     def command(self, evt):
+        "check for and run a command."
         parse_cmd(evt)
         func = getattr(Client.cmds, evt.cmd, None)
         if func:
@@ -109,17 +132,21 @@ class Client(Handler):
         evt.ready()
 
     def raw(self, txt):
+        "raw output."
         pass
 
     def say(self, channel, txt):
+        "say text in a channel."
         self.raw(txt)
 
     def show(self, evt):
+        "show results into a channel."
         for txt in evt.result:
             self.say(evt.channel, txt)
 
 
 def cmnd(txt, out):
+    "do a command using the provided output function."
     clt = Client()
     clt.raw = out
     evn = Event()
@@ -129,7 +156,9 @@ def cmnd(txt, out):
     evn.wait()
     return evn
 
+
 def parse_cmd(obj, txt=None):
+    "parse a string for a command."
     args = []
     obj.args    = obj.args or []
     obj.cmd     = obj.cmd or ""
