@@ -42,21 +42,17 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objr.broker  import Broker
-from objr.errors  import debug
-from objr.handler import Client, Event, cmnd, parse_cmd
-from objr.object  import Default, spl
-from objr.errors  import Errors
-from objr.persist import Workdir
+from objx import Default, Workdir, cdir, skel
+from objr import Client, Command, Event, cmnd, errors, parse_cmd, spl
 
 
-Cfg         = Default()
-Cfg.mod     = "cmd,mod"
-Cfg.name    = "objr"
-Cfg.version = "102"
-Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
-Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
-Workdir.wd = Cfg.wd
+Cfg             = Default()
+Cfg.mod         = "cmd,mod"
+Cfg.name        = "objx"
+Cfg.version     = "70"
+Cfg.wd          = os.path.expanduser(f"~/.{Cfg.name}")
+Cfg.pidfile     = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
+Workdir.workdir = Cfg.wd
 
 
 if os.path.exists("mods"):
@@ -69,10 +65,6 @@ dte = time.ctime(time.time()).replace("  ", " ")
 
 
 class Console(Client):
-
-    def __init__(self):
-        Client.__init__(self)
-        Broker.add(self)
 
     def announce(self, txt):
         pass
@@ -91,6 +83,9 @@ class Console(Client):
     def say(self, channel, txt):
         txt = txt.encode('utf-8', 'replace').decode()
         print(txt)
+
+
+"utilities"
 
 
 def daemon(pidfile, verbose=False):
@@ -112,9 +107,13 @@ def daemon(pidfile, verbose=False):
     os.chdir("/")
     if os.path.exists(pidfile):
         os.unlink(pidfile)
-    Workdir.cdir(os.path.dirname(pidfile))
+    cdir(os.path.dirname(pidfile))
     with open(pidfile, "w", encoding="utf-8") as fds:
         fds.write(str(os.getpid()))
+
+
+def debug(txt):
+    print(txt)
 
 
 def init(pkg, modstr, disable="", wait=False):
@@ -152,14 +151,21 @@ def wrap(func):
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old2)
 
 
+"register"
+
+
 def ver(event):
     event.reply(f"{Cfg.name.upper()} {Cfg.version}")
 
 
+Command.add(ver)
+
+
+"runtime"
+
+
 def main():
-    Workdir.skel()
-    Errors.enable(print)
-    Client.add(ver)
+    skel()
     parse_cmd(Cfg, " ".join(sys.argv[1:]))
     if 'a' in Cfg.opts:
         Cfg.mod = ",".join(mods.__dir__())
@@ -190,7 +196,7 @@ def main():
 
 def wrapped():
     wrap(main)
-    Errors.show()
+    errors()
 
 
 if __name__ == "__main__":

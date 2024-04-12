@@ -9,12 +9,15 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "objr"
 description = "objects runtime"
-version = "111"
+version = "120"
 authors = [
     {name = "xobjectz",email = "objx@proton.me"},
 ]
 readme = "README.rst"
 license = {text="Public Domain"}
+dependencies = [
+    'objx',
+]
 classifiers = [ 
     'Development Status :: 3 - Alpha',
     'License :: Public Domain',
