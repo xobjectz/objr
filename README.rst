@@ -1,11 +1,12 @@
-O B J R
-#######
+README
+######
+
 
 NAME
 
 ::
 
-    objr - runtime
+    objr - object runtime
 
 
 SYNOPSIS
