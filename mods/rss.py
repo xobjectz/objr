@@ -23,10 +23,13 @@ from objx import values, whitelist, update
 from objr import Command, Repeater, laps, launch, spl
 
 
-from .irc import broker
+from .broker import broker, debug
 
 
 def init():
+    if not broker:
+        debug("no broker")
+        return
     fetcher = Fetcher()
     fetcher.start()
     return fetcher

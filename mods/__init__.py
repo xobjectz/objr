@@ -9,6 +9,7 @@
 
 import importlib
 import os
+import sys
 
 
 SKIP = [
@@ -21,6 +22,15 @@ modules = []
 
 def __dir__():
     return sorted(modules)
+
+
+def debug(txt):
+    print(txt)
+
+
+def getmain(name):
+    mod = sys.modules.get("__main__")
+    return getattr(mod, name, None)
 
 
 def import_pkg(dname, pname=""):

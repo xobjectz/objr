@@ -42,14 +42,19 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
+from mods.broker import Broker
+
+
+broker = Broker()
+
+
 from objx import Default, Workdir, cdir, skel
 from objr import Client, Command, Event, cmnd, errors, parse_cmd, spl
 
 
 Cfg             = Default()
 Cfg.mod         = "cmd,mod"
-Cfg.name        = "objx"
-Cfg.version     = "70"
+Cfg.name        = sys.argv[0].split(os.sep)[-1]
 Cfg.wd          = os.path.expanduser(f"~/.{Cfg.name}")
 Cfg.pidfile     = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Workdir.workdir = Cfg.wd
@@ -61,7 +66,7 @@ else:
     mods = None
 
 
-dte = time.ctime(time.time()).replace("  ", " ")
+dte    = time.ctime(time.time()).replace("  ", " ")
 
 
 class Console(Client):
@@ -149,16 +154,6 @@ def wrap(func):
     finally:
         if old2:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old2)
-
-
-"register"
-
-
-def ver(event):
-    event.reply(f"{Cfg.name.upper()} {Cfg.version}")
-
-
-Command.add(ver)
 
 
 "runtime"

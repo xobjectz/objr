@@ -11,9 +11,8 @@ import os
 import time
 
 
-from objr.handler import Client
-from objr.object  import Object, fmt, update
-from objr.persist import Persist, find, fntime, laps, sync
+from objx import Object, fmt, update
+from objr import Client, Persist, find, fntime, laps, sync
 
 
 MONTH = {

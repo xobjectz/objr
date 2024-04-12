@@ -19,11 +19,13 @@ import _thread
 
 
 from objx import Default, Object, edit, fmt, keys, last, sync, whitelist
-from objr import Broker, Client, Command, Event, command, later, launch
+from objr import Client, Command, Event, command, later, launch
+
+
+from .broker import broker
 
 
 NAME       = __file__.split(os.sep)[-3]
-broker     = Broker()
 filterlist = ["PING", "PONG", "PRIVMSG"]
 saylock    = _thread.allocate_lock()
 

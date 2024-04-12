@@ -10,7 +10,7 @@ from objx import values
 from objr import Command, name
 
 
-from .rss import broker
+from . import broker
 
 
 def flt(event):

@@ -10,11 +10,15 @@ import datetime
 import time
 
 
-from objr.broker  import Broker
-from objr.handler import Event
-from objr.object  import Object, construct, keys
-from objr.persist import laps
-from objr.thread  import Repeater, launch
+
+from objx import Object, construct, keys, values
+from objr import Event, Repeater, laps, launch
+
+
+from . import getmain
+
+
+broker = getmain("broker")
 
 
 def __dir__():
@@ -337,7 +341,7 @@ def cbnow(evt):
         nrtimes = int(delta/needed)
         txt += "%s: %s " % (getalias(name), nrtimes)
     txt += " http://genocide.rtfd.io"
-    for bot in Broker.all():
+    for bot in values(broker.objs):
         if "announce" in dir(bot):
             bot.announce(txt)
 

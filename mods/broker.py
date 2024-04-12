@@ -60,3 +60,10 @@ class Broker:
     def remove(self, obj):
         "remove object from broker"
         delattr(self.objs, rpr(obj))
+
+
+broker = Broker()
+
+
+def debug(txt):
+    print(txt)
