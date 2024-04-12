@@ -1,5 +1,5 @@
-README
-######
+O B J R
+#######
 
 NAME
 
@@ -27,7 +27,6 @@ SYNOPSIS
 DESCRIPTION
 
 ::
-
 
     OBJR has all you need to program a unix cli program, such as disk
     perisistence for configuration files, event handler to handle the
@@ -112,6 +111,7 @@ CONFIGURATION
     $ objr dpl <url> <item1,item2>
     $ objr rem <url>
     $ objr nme <url> <name>
+
 
 COMMANDS
 
