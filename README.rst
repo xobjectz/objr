@@ -93,7 +93,7 @@ CONFIGURATION
 ::
 
     $ objr cfg 
-    channel=#botl commands=True nick=botl port=6667 server=localhost
+    channel=#objr commands=True nick=objr port=6667 server=localhost
 
     irc
 
@@ -148,7 +148,7 @@ SYSTEMD
     User=<user>
     Group=<user>
     WorkingDirectory=/home/<user>/.objr
-    ExecStart=/home/<user>/.local/pipx/venvs/botl/bin/objr -d
+    ExecStart=/home/<user>/.local/pipx/venvs/objr/bin/objr -d
     RemainAfterExit=yes
 
     [Install]
