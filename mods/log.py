@@ -9,9 +9,8 @@
 import time
 
 
-from objr.handler import Client
-from objr.object  import Object
-from objr.persist import Persist, find, fntime, laps, sync
+from objx import Object, find, fntime, sync, whitelist
+from objr import Command, laps
 
 
 class Log(Object):
@@ -21,7 +20,7 @@ class Log(Object):
         self.txt = ''
 
 
-Persist.add(Log)
+whitelist(Log)
 
 
 def log(event):
@@ -40,4 +39,4 @@ def log(event):
     event.reply('ok')
 
 
-Client.add(log)
+Command.add(log)

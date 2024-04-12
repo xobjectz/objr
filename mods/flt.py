@@ -6,15 +6,19 @@
 "fleet"
 
 
-from objr.broker  import Broker
-from objr.handler import Client
-from objr.thread  import name
+from objx import values
+from objr import Command, name
+
+
+from .rss import broker
+
 
 def flt(event):
+    bots = values(broker.objs)
     try:
-        event.reply(Broker.all()[int(event.args[0])])
+        event.reply(bots[int(event.args[0])])
     except (IndexError, ValueError):
-        event.reply(",".join([name(x).split(".")[-1] for x in Broker.all()]))
+        event.reply(",".join([name(x).split(".")[-1] for x in bots]))
 
 
-Client.add(flt)
+Command.add(flt)
