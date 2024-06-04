@@ -33,12 +33,12 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objx.client  import Client, cmnd, parse
-from objx.handler import Event
-from objx.log     import debug, enable
-from objx.object  import Default
-from objx.run     import broker, init, scan
-from objx.thread  import errors, setout
+from objr.client  import Client, cmnd, parse
+from objr.handler import Event
+from objr.log     import debug, enable
+from objr.object  import Default
+from objr.run     import broker, init, scan
+from objr.thread  import errors, setout
 
 
 from objr import mods as modules

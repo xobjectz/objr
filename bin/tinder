@@ -19,12 +19,12 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx.client  import Client, Command, laps, parse
-from objx.handler import Event
-from objx.log     import debug, enable
-from objx.object  import Default, Object, keys
-from objx.run     import scan
-from objx.thread  import errors, launch
+from objr.client  import Client, Command, laps, parse
+from objr.handler import Event
+from objr.log     import debug, enable
+from objr.object  import Default, Object, keys
+from objr.run     import scan
+from objr.thread  import errors, launch
 
 
 from objr import mods as modules
