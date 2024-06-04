@@ -4,7 +4,7 @@
 "list of commands."
 
 
-from objx.client import Command
+from ..client import Command
 
 
 def cmd(event):

@@ -17,11 +17,11 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from objx.broker import fntime
-from objx.object import Default, Object, fmt, update, values
-from objx.client import laps
-from objx.run    import broker, spl
-from objx.thread import Repeater, launch
+from ..broker import fntime
+from ..object import Default, Object, fmt, update, values
+from ..client import laps
+from ..run    import broker, spl
+from ..thread import Repeater, launch
 
 
 def init():

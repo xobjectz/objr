@@ -1,4 +1,5 @@
-grep -R "print(" objr
 grep -R sys objr
-grep -R __import__ objr
-grep -R inspect objr
+grep -R "print(" objr
+grep -R __import__ objr 
+grep -R importlib objr
+grep -R "import os" objr

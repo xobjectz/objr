@@ -11,10 +11,10 @@ import threading
 import time
 
 
-from objr.log    import debug
-from objr.object import Object, fmt
-from objr.run    import broker
-from objr.thread import launch
+from ..log    import debug
+from ..object import Object, fmt
+from ..run    import broker
+from ..thread import launch
 
 
 def init():
@@ -25,7 +25,7 @@ def init():
     return udpd
 
 
-class Cfg(Object):
+class Cfg(Object): # pylint: disable=R0903
 
     "Cfg"
 

@@ -7,10 +7,10 @@
 import time
 
 
-from objx.broker import fntime
-from objx.client import laps
-from objx.object import Object
-from objx.run    import broker
+from ..broker import fntime
+from ..client import laps
+from ..object import Object
+from ..run    import broker
 
 
 class NoDate(Exception):

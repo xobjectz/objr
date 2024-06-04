@@ -9,17 +9,16 @@ import re
 import time as ttime
 
 
-from objr.client import laps
-from objr.log    import debug
-from objr.handler import Event
-from objr.object import update
-from objr.run    import broker
-from objr.thread import Timer, launch
+from ..client  import laps
+from ..handler import Event
+from ..object  import update
+from ..run     import broker
+from ..thread  import Timer, launch
 
 
 def init():
     "initialaze modules."
-    for fnm, obj in broker.all("timer"):
+    for _fnm, obj in broker.all("timer"):
         if "time" not in obj:
             continue
         diff = float(obj.time) - ttime.time()
@@ -59,18 +58,19 @@ FORMATS = [
 
 class NoDate(Exception):
 
-    pass
+    "can't parse date."
 
 
 def extract_date(daystr):
     "extract date from string."
+    res = None
     for fmt in FORMATS:
         try:
             res = ttime.mktime(ttime.strptime(daystr, fmt))
+            break
         except ValueError:
-            res = None
-        if res:
-            return res
+            pass
+    return res
 
 
 def get_day(daystr):
@@ -94,7 +94,7 @@ def get_day(daystr):
         day = int(day)
         month = int(month)
         yea = int(yea)
-        date = "%s %s %s" % (day, MONTHS[month], yea)
+        date = f"{day} {MONTHS[month]} {yea}"
         return ttime.mktime(ttime.strptime(date, r"%d %b %Y"))
     raise NoDate(daystr)
 
@@ -161,6 +161,7 @@ def to_day(daystr):
     previous = ""
     line = ""
     daystr = str(daystr)
+    res = None
     for word in daystr.split():
         line = previous + " " + word
         previous = word
@@ -169,9 +170,9 @@ def to_day(daystr):
         except ValueError:
             res = None
         if res:
-            return res
+            break
         line = ""
-
+    return res
 
 def today():
     "return time of today."
@@ -180,9 +181,11 @@ def today():
 
 def tmr(event):
     "set timer."
+    # pylint: disable=R0912
+    res = None
     if not event.rest:
         nmr = 0
-        for fnm, obj in find('timer'):
+        for _fnm, obj in broker.all('timer'):
             if "time" not in obj:
                 continue
             lap = float(obj.time) - ttime.time()
@@ -191,7 +194,7 @@ def tmr(event):
                 nmr += 1
         if not nmr:
             event.reply("no timers")
-        return
+        return res
     seconds = 0
     line = ""
     for word in event.args:
@@ -199,8 +202,8 @@ def tmr(event):
             try:
                 seconds = int(word[1:])
             except (ValueError, IndexError):
-                event.reply("%s is not an integer" % seconds)
-                return
+                event.reply(f"{seconds} is not an integer")
+                return res
         else:
             line += word + " "
     if seconds:
@@ -215,7 +218,7 @@ def tmr(event):
             target += hour
     if not target or ttime.time() > target:
         event.reply("already passed given time.")
-        return
+        return res
     event.time = target
     diff = target - ttime.time()
     event.reply("ok " +  laps(diff))
@@ -225,3 +228,4 @@ def tmr(event):
     update(timer, event)
     broker.add(timer)
     launch(timer.start)
+    return res

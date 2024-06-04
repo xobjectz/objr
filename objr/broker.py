@@ -67,6 +67,7 @@ class Broker:
         return res
 
     def long(self, txt):
+        "expand to full qualified name."
         for qual in Broker.fqns:
             if txt in qual.split(".")[-1].lower():
                 return qual

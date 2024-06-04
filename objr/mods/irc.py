@@ -15,12 +15,12 @@ import time
 import _thread
 
 
-from objx.object  import Default, Object, edit, fmt, keys, values
-from objx.client  import Client, command
-from objx.handler import Event
-from objx.log     import Logging, debug
-from objx.run     import broker
-from objx.thread  import later, launch
+from ..object  import Default, Object, edit, fmt, keys, values
+from ..client  import Client, command
+from ..handler import Event
+from ..log     import Logging, debug
+from ..run     import broker
+from ..thread  import later, launch
 
 
 NAME    = __file__.split(os.sep)[-3]

@@ -4,13 +4,14 @@
 "fleet"
 
 
-from objr.object import values
-from objr.run    import broker
-from objr.thread import name
+from ..handler import Handler
+from ..run     import broker
+from ..thread  import name
 
 
 def flt(event):
-    bot = []
+    "list of bots."
+    bots = []
     for obj in broker.all():
         if not isinstance(obj, Handler):
             continue
