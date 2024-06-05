@@ -8,7 +8,7 @@ import datetime
 import time
 
 
-from .object import Object, fqn, items, keys, search
+from .object import Object, fqn, ident, items, keys, search
 
 
 rpr = object.__repr__
@@ -99,16 +99,6 @@ def fntime(daystr):
     if rest:
         timed += float('.' + rest)
     return timed
-
-
-def ident(obj):
-    "return an id for an object."
-    return pjoin(fqn(obj), *str(datetime.datetime.now()).split())
-
-
-def pjoin(*args):
-    "path join."
-    return "/".join(args)
 
 
 def __dir__():
