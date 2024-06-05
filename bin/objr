@@ -33,15 +33,14 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
+from objx import Default 
+
+
 from objr.client  import Client, cmnd, parse
 from objr.handler import Event
 from objr.log     import debug, enable
-from objr.object  import Default
 from objr.run     import broker, init, scan
 from objr.thread  import errors, setout
-
-
-from objr import mods as modules
 
 
 Cfg             = Default()
@@ -123,6 +122,7 @@ def main():
         enable(print)
         dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
         debug(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
+    modules = getmods(Cfg.sets.mdir or "mods")
     scan(modules, Cfg.mod, Cfg.sets.dis)
     if "c" in Cfg.opts:
         init(modules, Cfg.mod, Cfg.sets.dis)
