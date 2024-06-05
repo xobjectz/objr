@@ -5,7 +5,7 @@
 
 
 from .broker  import Broker
-from .client  import Client, Command, laps
+from .client  import Client, Command, laps, parse
 from .handler import Event, Handler
 from .log     import debug, enable
 from .thread  import launch, name

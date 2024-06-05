@@ -33,7 +33,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objx import Default 
+from objx import Default
 
 
 from objr.client  import Client, cmnd, parse
