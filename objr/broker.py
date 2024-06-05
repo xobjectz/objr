@@ -8,7 +8,7 @@ import datetime
 import time
 
 
-from .object import Object, fqn, ident, items, keys, search
+from objx import Object, fqn, ident, items, keys, search
 
 
 rpr = object.__repr__

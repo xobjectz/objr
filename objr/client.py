@@ -7,8 +7,9 @@
 import inspect
 
 
+from objx import Default, Object
+
 from .handler import Event, Handler
-from .object  import Default, Object
 from .thread  import later
 
 

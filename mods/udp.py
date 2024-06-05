@@ -11,10 +11,8 @@ import threading
 import time
 
 
-from ..log    import debug
-from ..object import Object, fmt
-from ..run    import broker
-from ..thread import launch
+from objx import Object, fmt
+from objr import broker, debug, launch
 
 
 def init():

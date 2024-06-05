@@ -4,9 +4,7 @@
 "fleet"
 
 
-from ..handler import Handler
-from ..run     import broker
-from ..thread  import name
+from objr import Handler, broker, name
 
 
 def flt(event):

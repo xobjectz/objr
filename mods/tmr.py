@@ -9,11 +9,13 @@ import re
 import time as ttime
 
 
-from ..client  import laps
-from ..handler import Event
-from ..object  import update
-from ..run     import broker
-from ..thread  import Timer, launch
+from objx import update
+
+
+from objr.client  import laps
+from objr.handler import Event
+from objr.run     import broker
+from objr.thread  import Timer, launch
 
 
 def init():

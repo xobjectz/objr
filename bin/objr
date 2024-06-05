@@ -4,7 +4,7 @@
 # pylint: disable=C0413,C0103
 
 
-"""OBJR
+"""OBJR - objects runtime
 
     objr  <cmd> [key=val] [key==val]
     objr  [-a] [-c] [-h] [-v]
@@ -116,13 +116,13 @@ def main():
     if "h" in Cfg.opts:
         print(__doc__)
         return
+    modules = getmods(Cfg.sets.mdir or "mods")
     if "a" in Cfg.opts:
         Cfg.mod = ",".join(dir(modules))
     if "v" in Cfg.opts:
         enable(print)
         dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
         debug(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
-    modules = getmods(Cfg.sets.mdir or "mods")
     scan(modules, Cfg.mod, Cfg.sets.dis)
     if "c" in Cfg.opts:
         init(modules, Cfg.mod, Cfg.sets.dis)

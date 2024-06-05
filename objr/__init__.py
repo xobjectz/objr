@@ -4,25 +4,34 @@
 "objects runtime"
 
 
+from .broker  import Broker
+from .client  import Client, Command, laps
+from .handler import Event, Handler
+from .log     import debug, enable
+from .thread  import launch, name
+from .utils   import *
+
+
 def __dir__():
     return (
         'Broker',
         'Client',
-        'Commands',
+        'Command',
         'Event',
-        'Handler'
+        'Handler',
         'Logging',
         'Repeater',
         'Thread',
         'Timer',
         'command',
-        'broker',
         'debug',
         'enable'
         'errors',
         'init',
+        'laps',
         'later',
         'launch',
+        'name',
         'parse',
         'scan',
         'spl'

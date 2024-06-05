@@ -4,8 +4,8 @@
 "locate"
 
 
-from ..object import fmt
-from ..run    import broker
+from objx import fmt
+from objr import broker
 
 
 def fnd(event):
