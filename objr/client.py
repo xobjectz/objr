@@ -9,8 +9,10 @@ import inspect
 
 from objx import Default, Object
 
+
 from .handler import Event, Handler
 from .thread  import later
+from .utils   import skip, spl
 
 
 class Client(Handler):
@@ -115,6 +117,37 @@ def laps(seconds, short=True):
     return txt
 
 
+def init(pkg, modstr, disable=""):
+    "start modules"
+    mds = []
+    for modname in spl(modstr):
+        if skip(modname, disable):
+            continue
+        mod = getattr(pkg, modname, None)
+        if not mod:
+            continue
+        if "init" in dir(mod):
+            try:
+                mod.init()
+                mds.append(mod)
+            except Exception as ex: # pylint: disable=W0718
+                later(ex)
+    return mds
+
+
+def scan(pkg, modstr, disable=""):
+    "scan modules for commands and classes"
+    mds = []
+    for modname in spl(modstr):
+        if skip(modname, disable):
+            continue
+        module = getattr(pkg, modname, None)
+        if not module:
+            continue
+        scancmd(module)
+    return mds
+
+
 def parse(obj, txt=None):
     "parse a string for a command."
     args = []
@@ -185,6 +218,8 @@ def __dir__():
         'add',
         'command',
         'laps',
+        'init',
         'parse',
+        'scan',
         'scancmd'
     )

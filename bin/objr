@@ -36,10 +36,10 @@ sys.path.insert(0, os.getcwd())
 from objx import Default
 
 
-from objr.client  import Client, cmnd, parse
+from objr.client  import Client, cmnd, init, parse, scan
 from objr.handler import Event
 from objr.log     import debug, enable
-from objr.run     import broker, init, scan
+from objr.run     import broker
 from objr.thread  import errors, setout
 
 
@@ -84,12 +84,54 @@ class Console(Client):
         print(txt)
 
 
+def daemon(verbose=False):
+    "switch to background."
+    # pylint: disable=W0212
+    pid = os.fork()
+    if pid != 0:
+        os._exit(0)
+    os.setsid()
+    pid2 = os.fork()
+    if pid2 != 0:
+        os._exit(0)
+    if not verbose:
+        with open('/dev/null', 'r', encoding="utf-8") as sis:
+            os.dup2(sis.fileno(), sys.stdin.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as sos:
+            os.dup2(sos.fileno(), sys.stdout.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as ses:
+            os.dup2(ses.fileno(), sys.stderr.fileno())
+    os.umask(0)
+    os.chdir("/")
+
+
+def forever():
+    while True:
+        time.sleep(1.0)
+
+
 def getmods(path, modname="mods"):
     "return modules"
     path = os.path.dirname(path)
     if path not in sys.path:
         sys.path.insert(0, path)
     return __import__(modname)
+
+
+def pidfile(path):
+    "create pidfile"
+    if os.path.exists(path):
+        os.unlink(path)
+    cdir(path)
+    with open(path, "w", encoding="utf-8") as fds:
+        fds.write(str(os.getpid()))
+
+
+def privileges(username):
+    "drop privileges."
+    pwnam = pwd.getpwnam(username)
+    os.setgid(pwnam.pw_gid)
+    os.setuid(pwnam.pw_uid)
 
 
 def wrap(func):
@@ -111,15 +153,23 @@ def wrap(func):
 
 def main():
     "main"
-    setout(print)
     parse(Cfg, " ".join(sys.argv[1:]))
+    modules = getmods(Cfg.sets.mdir or "mods")
     if "h" in Cfg.opts:
         print(__doc__)
         return
-    modules = getmods(Cfg.sets.mdir or "mods")
     if "a" in Cfg.opts:
         Cfg.mod = ",".join(dir(modules))
+    if "d" in Cfg.opts:
+        Cfg.mod = ",".join(dir(modules))
+        daemon("v" in Cfg.opts)
+        scan(modules, Cfg.mod, Cfg.sets.dis)
+        init(modules, Cfg.mod, Cfg.sets.dis)
+        pidfile(Cfg.pidfile)
+        forever()
+        return
     if "v" in Cfg.opts:
+        setout(print)
         enable(print)
         dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
         debug(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
@@ -128,8 +178,7 @@ def main():
         init(modules, Cfg.mod, Cfg.sets.dis)
         csl = Console()
         csl.start()
-        while 1:
-            time.sleep(1.0)
+        forever()
     elif Cfg.otxt:
         cmnd(Cfg.otxt, print)
 

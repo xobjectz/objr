@@ -22,8 +22,9 @@ from objx import Default, Object, fmt, update, values
 
 from objr.broker import fntime
 from objr.client import laps
-from objr.run    import broker, spl
+from objr.run    import broker
 from objr.thread import Repeater, launch
+from objr.utils  import spl
 
 
 def init():
