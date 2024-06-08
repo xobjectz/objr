@@ -8,7 +8,10 @@ import time
 
 
 from objx import Object
-from objr import broker, fntime, laps
+from objr import fntime, laps
+
+
+from objr.run import broker
 
 
 class Log(Object): # pylint: disable=R0903

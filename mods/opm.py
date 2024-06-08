@@ -5,7 +5,10 @@
 
 
 from objx import Default, construct, items, update
-from objr import broker, shortid, spl
+from objr import shortid, spl
+
+
+from objr.run import broker
 
 
 from .rss import Rss
@@ -122,14 +125,15 @@ def imp(event):
     nrs = 0
     insertid = shortid()
     for obj in prs.parse(txt, 'outline', "name,display_list,xmlUrl"):
-        nrs += 1
-        if obj.xmlUrl and broker.find({"rss": obj.xmlUrl}, match="rss"):
-            event.reply(f"skipping {obj.xmlUrl}")
-            continue
+        #if obj.xmlUrl and broker.find({"rss": obj.xmlUrl}):
+        #    event.reply(f"skipping {obj.xmlUrl}")
+        #    continue
         rss = Rss()
         construct(rss, obj)
         rss.rss = rss.xmlUrl
         rss.insertid = insertid
+        broker.add(rss)
+        nrs += 1
     if nrs:
         event.reply(f"added {nrs} urls.")
         

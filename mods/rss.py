@@ -20,11 +20,10 @@ from urllib.parse import quote_plus, urlencode
 from objx import Default, Object, fmt, update, values
 
 
-from objr.broker import fntime
-from objr.client import laps
 from objr.run    import broker
-from objr.thread import Repeater, launch
-from objr.utils  import spl
+from objr.thread import launch
+from objr.timer  import Repeater
+from objr.utils  import fntime, laps, spl
 
 
 def init():
@@ -72,6 +71,7 @@ class Fetcher(Object):
         self.dosave = False
         self.seen = Seen()
         self.seenfn = None
+        broker.add(self)
 
     @staticmethod
     def display(obj):
@@ -95,7 +95,7 @@ class Fetcher(Object):
             result += ' - '
         return result[:-2].rstrip()
 
-    def fetch(self, feed):
+    def fetch(self, feed, silent=False):
         "fetch feed."
         with fetchlock:
             counter = 0
@@ -116,6 +116,8 @@ class Fetcher(Object):
                 if self.dosave:
                     broker.add(fed)
                 result.append(fed)
+        if silent:
+            return counter
         #if result:
         #    broker.add(self.seen, self.seenfn)
         txt = ''
@@ -129,11 +131,11 @@ class Fetcher(Object):
                     bot.announce(txt2.rstrip())
         return counter
 
-    def run(self):
+    def run(self, silent=False):
         "fetch all feeds."
         thrs = []
         for _fn, feed in broker.all('rss'):
-            thrs.append(launch(self.fetch, feed, name=f"{feed.rss}"))
+            thrs.append(launch(self.fetch, feed, silent, name=f"{feed.rss}"))
         return thrs
 
     def start(self, repeat=True):
@@ -304,11 +306,11 @@ def rem(event):
     if len(event.args) != 1:
         event.reply('rem <stringinurl>')
         return
-    selector = {'rss': event.args[0]}
-    for fnm, feed in broker.find('rss', selector):
+    for _fnm, feed in broker.all("rss"):
+        if event.args[0] not in feed.rss:
+            continue
         if feed:
             feed.__deleted__ = True
-            broker.add(feed, fnm)
     event.reply('ok')
 
 
@@ -317,8 +319,9 @@ def res(event):
     if len(event.args) != 1:
         event.reply('res <stringinurl>')
         return
-    selector = {'rss': event.args[0]}
-    for fnm, feed in broker.find('rss', selector, deleted=True):
+    for fnm, feed in broker.all("rss", True):
+        if event.args[0] not in feed.rss:
+            continue
         if feed:
             feed.__deleted__ = False
             broker.add(feed, fnm)
@@ -341,7 +344,7 @@ def rss(event):
     if 'http' not in url:
         event.reply('i need an url')
         return
-    for fnm, result in broker.find({'rss': url}):
+    for fnm, result in broker.find({'rss': url}, match="rss"):
         if result:
             event.reply(f'already got {url}')
             return
@@ -349,3 +352,19 @@ def rss(event):
     feed.rss = event.args[0]
     broker.add(feed)
     event.reply('ok')
+
+
+def syn(event):
+    "synchronize feeds."
+    fetchers = list(broker.all("fetcher"))
+    if not fetchers:
+        event.reply("no fetcher found.")
+        return
+    fetcher = fetchers[0][-1]
+    thrs = fetcher.run(True)
+    nrs = 0
+    for thr in thrs:
+        thr.join()
+        nrs += 1
+    event.reply(f"{nrs} feeds synced")
+ 
