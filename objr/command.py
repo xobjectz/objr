@@ -11,7 +11,7 @@ from objx         import Object, parse
 from objr.errors  import later
 
 
-class Command:
+class Command: # pylint: disable=R0903
 
     "Command"
 
