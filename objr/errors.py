@@ -15,26 +15,32 @@ class Errors: # pylint: disable=R0903
     errors = []
     out    = None
 
+    @staticmethod
+    def formatexc(exc):
+        "format an exception"
+        res = ""
+        stream = io.StringIO(
+                             traceback.print_exception(
+                                                       type(exc),
+                                                       exc,
+                                                       exc.__traceback__
+                                                      )
+                            )
+        for line in stream.readlines():
+            res += line + "\n"
+        return res
+
+    @staticmethod
+    def output(exc):
+        "check if output function is set."
+        if Errors.out:
+            Errors.out(Errors.formatexc(exc)) # pylint: disable=E1102
+
 
 def errors():
     "show exceptions"
     for exc in Errors.errors:
-        out(exc)
-
-
-def formatexc(exc):
-    "format an exception"
-    res = ""
-    stream = io.StringIO(
-                         traceback.print_exception(
-                                                   type(exc),
-                                                   exc,
-                                                   exc.__traceback__
-                                                  )
-                        )
-    for line in stream.readlines():
-        res += line + "\n"
-    return res
+        Errors.output(exc)
 
 
 def later(exc):
@@ -43,21 +49,9 @@ def later(exc):
     Errors.errors.append(excp)
 
 
-def out(exc):
-    "check if output function is set."
-    if Errors.out:
-        Errors.out(formatexc(exc)) # pylint: disable=E1102
-
-
-def setout(func):
-    "set output function."
-    Errors.out = func
-
-
 def __dir__():
     return (
         'Errors',
         'errors',
-        'later',
-        'setout'
+        'later'
     )

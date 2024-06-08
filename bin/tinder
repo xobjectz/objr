@@ -20,8 +20,8 @@ sys.path.insert(0, os.getcwd())
 
 
 from objx import Default, Object, keys, parse
-from objr import Client, Command, Event
-from objr import debug, errors, enable, laps, launch, scan
+from objr import Classes, Client, Command, Errors, Event
+from objr import debug, errors, laps, launch, scan
 
 
 if os.path.exists("mods"):
@@ -166,8 +166,8 @@ if __name__ == "__main__":
     if "f" in Cfg.opts:
         if os.path.exists(workdir):
             shutil.rmtree(workdir)
-    Cfg.mod = lsmod(path)
-    enable(print)
+    Cfg.mod = Classes.types(path)
+    Errors.out = print
     dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
     debug(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
     if "p" in Cfg.opts:

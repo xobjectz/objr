@@ -9,9 +9,8 @@ import pathlib
 import _thread
 
 
-from objx       import Object, ident, read, write
-from objr.run   import broker
-from objr.utils import strip
+from .object  import Object, ident, read, write
+from .utils   import strip
 
 
 lock = _thread.allocate_lock()
@@ -23,33 +22,30 @@ class Workdir(Object): # pylint: disable=R0903
 
     workdir = ""
 
+    @staticmethod
+    def types():
+        "return types stored."
+        return os.listdir(Workdir.store())
+
+    @staticmethod
+    def skel():
+        "create directory,"
+        pth  = os.path.join(Workdir.workdir, "store", "")
+        path = pathlib.Path(pth)
+        path.mkdir(parents=True, exist_ok=True)
+
+    @staticmethod
+    def store(pth=""):
+        "return objects directory."
+        return os.path.join(Workdir.workdir, "store", pth)
+
 
 def fetch(obj, pth):
     "read object from disk."
     with lock:
-        pth2 = store(pth)
+        pth2 = Workdir.store(pth)
         read(obj, pth2)
         return strip(pth)
-
-
-long = broker.long
-
-
-def lsstore():
-    "return types stored."
-    return os.listdir(store())
-
-
-def skel():
-    "create directory,"
-    pth  = os.path.join(Workdir.workdir, "store", "")
-    path = pathlib.Path(pth)
-    path.mkdir(parents=True, exist_ok=True)
-
-
-def store(pth=""):
-    "return objects directory."
-    return os.path.join(Workdir.workdir, "store", pth)
 
 
 def sync(obj, pth=None):
@@ -57,7 +53,7 @@ def sync(obj, pth=None):
     with lock:
         if pth is None:
             pth = ident(obj)
-        pth2 = store(pth)
+        pth2 = Workdir.store(pth)
         write(obj, pth2)
         return pth
 
@@ -65,9 +61,5 @@ def sync(obj, pth=None):
 def __dir__():
     return (
         'fetch',
-        'long',
-        'lsstore',
-        'skel',
-        'store',
         'sync'
     )

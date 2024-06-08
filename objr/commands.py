@@ -7,8 +7,9 @@
 import inspect
 
 
-from objx         import Object, parse
-from objr.errors  import later
+from .object import Object
+from .parse  import parse
+from .errors import later
 
 
 class Command: # pylint: disable=R0903
@@ -18,9 +19,10 @@ class Command: # pylint: disable=R0903
     cmds = Object()
 
 
-def add(func):
-    "add command."
-    setattr(Command.cmds, func.__name__, func)
+    @staticmethod
+    def add(func):
+        "add command."
+        setattr(Command.cmds, func.__name__, func)
 
 
 def command(bot, evt):
@@ -42,13 +44,12 @@ def scan(mod) -> None:
         if key.startswith("cb"):
             continue
         if 'event' in cmd.__code__.co_varnames:
-            add(cmd)
+            Command.add(cmd)
 
 
 def __dir__():
     return (
         'Command',
-        'add',
         'command',
         'scan'
     )

@@ -4,12 +4,13 @@
 "client"
 
 
-from objr.cmds    import command
-from objr.cmds    import scan as scancmd
-from objr.errors  import later
-from objr.handler import Event, Handler
-from objr.run     import broker
-from objr.utils   import skip, spl
+from .commands import command
+from .commands import scan as scancmd
+from .errors   import later
+from .event    import Event
+from .handler  import Handler
+from .run      import broker
+from .utils    import skip, spl
 
 
 class Client(Handler):

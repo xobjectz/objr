@@ -7,15 +7,17 @@
 import os
 
 
-from objx       import Default, fqn, search, update
-from objr.disk  import fetch, long, store, strip
-from objr.utils import fntime
+from .classes import Classes
+from .default import Default
+from .object  import fqn, search, update
+from .disk    import Workdir, fetch
+from .utils   import fntime, strip
 
 
 def fns(mtc=""):
     "show list of files."
     dname = ''
-    pth = store(mtc)
+    pth = Workdir.store(mtc)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
         if dirs:
             for dname in sorted(dirs):
@@ -28,7 +30,7 @@ def fns(mtc=""):
 
 def find(mtc, selector=None, index=None, deleted=False):
     "find object matching the selector dict."
-    clz = long(mtc)
+    clz = Classes.long(mtc)
     nrs = -1
     result = []
     for fnm in sorted(fns(clz), key=fntime):
@@ -64,7 +66,6 @@ def last(obj, selector=None):
 def __dir__():
     return (
         'fns',
-        'fntime',
         'find',
         'last'
     )

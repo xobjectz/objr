@@ -4,19 +4,23 @@
 "objects runtime"
 
 
-from .client  import Client, cmnd, scan
-from .cmds    import Command, command
-from .errors  import Errors, errors, formatexc, later
-from .handler import Event, Handler
-from .log     import Logging, debug, enable
-from .run     import broker
-from .thread  import launch
-from .timer   import *
-from .utils   import *
+from .classes  import Classes
+from .client   import Client, cmnd, scan
+from .commands import Command, command
+from .errors   import Errors, errors, later
+from .event    import Event
+from .handler  import Handler
+from .log      import Logging, debug
+from .repeater import Repeater
+from .run      import broker
+from .thread   import launch
+from .timer    import Timer
+from .utils    import *
 
 
 def __dir__():
     return (
+        'Classes',
         'Client',
         'Command',
         'Errors',
@@ -30,9 +34,7 @@ def __dir__():
         'cmnd',
         'command',
         'debug',
-        'enable',
         'errors',
-        'formatexc',
         'init',
         'laps',
         'later',

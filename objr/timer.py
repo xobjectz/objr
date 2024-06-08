@@ -1,17 +1,17 @@
 # This file is placed in the Public Domain.
 
 
-"timers/repeaters"
+"timer"
 
 
 import threading
 import time
 
 
-from objx        import Object
-from objr.run    import broker
-from objr.thread import launch
-from objr.utils  import name
+from .object import Object
+from .run    import broker
+from .thread import launch
+from .utils  import name
 
 
 class Timer(Object):
@@ -51,17 +51,7 @@ class Timer(Object):
             self.timer.cancel()
 
 
-class Repeater(Timer):
-
-    "Repeater"
-
-    def run(self):
-        launch(self.start)
-        super().run()
-
-
 def __dir__():
     return (
-        'Repeater',
-        'Timer'
+        'Timer',
     )

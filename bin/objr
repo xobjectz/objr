@@ -37,12 +37,12 @@ sys.path.insert(0, os.getcwd())
 from objx import Default, parse
 
 
-from objr.client  import Client, cmnd, init, scan
-from objr.errors  import errors, setout
-from objr.handler import Event
-from objr.log     import debug, enable
-from objr.run     import broker
-from objr.utils   import cdir
+from objr.client import Client, cmnd, init, scan
+from objr.errors import Errors, errors
+from objr.event  import Event
+from objr.log    import Logging, debug
+from objr.run    import broker
+from objr.utils  import cdir
 
 
 Cfg             = Default()
@@ -172,8 +172,7 @@ def main():
         forever()
         return
     if "v" in Cfg.opts:
-        setout(print)
-        enable(print)
+        Errors.out = Logging.out = print
         dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
         debug(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
     scan(modules, Cfg.mod, Cfg.sets.dis)
