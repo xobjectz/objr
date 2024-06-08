@@ -78,15 +78,14 @@ class Broker:
         "return object by origin (repr)"
         return getattr(self.objs, orig, None)
 
-    def last(self, obj, selector=None):
+
+    def last(self, obj):
         "return last object saved."
-        if selector is None:
-            selector = {}
         result = sorted(self.all(fqn(obj)), key=lambda x: fntime(x[0]))
         res = None
         if result:
             inp = result[-1]
-            res = inp[0]
+            res = inp[1]
             update(obj, res)
         return res
 
