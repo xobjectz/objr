@@ -15,16 +15,9 @@ import time
 import _thread
 
 
-from objx  import Default, Object, edit, fmt, keys, values
-
-
-from objr.client  import Client
-from objr.command import command
-from objr.errors  import later
-from objr.handler import Event
-from objr.log     import Logging, debug
-from objr.run     import broker
-from objr.thread  import launch
+from objx     import Default, Object, edit, fmt, keys, values
+from objr     import Client, Event, Logging
+from objr     import broker, command, debug, later, launch
 
 
 NAME    = __file__.split(os.sep)[-3]
@@ -82,7 +75,7 @@ class Config(Default): # pylint: disable=R0902,R0903
         self.realname = self.realname or Config.realname
         self.server = self.server or Config.server
         self.username = self.username or Config.username
-
+        broker.add(self)
 
 
 class TextWrap(textwrap.TextWrapper):

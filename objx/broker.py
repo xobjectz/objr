@@ -28,72 +28,64 @@ class Broker:
     def __init__(self):
         self.objs = Object()
 
-    def add(self, obj, name=None):
+    def add(self, obj):
         "add an object to the broker."
         with lock:
-            setattr(self.objs, ident(obj), obj)
-            if name is None:
-                name = fqn(obj)
+            ids = ident(obj)
+            setattr(self.objs, ids, obj)
+            name = ids.split(os.sep)[0]
             if name not in Broker.fqns:
                 Broker.fqns.append(name)
+            return ids
 
     def all(self, name=None, deleted=False):
         "return all objects."
         with lock:
             name = self.long(name)
-            for key, obj in items(self.objs):
-                if name and name not in key:
-                    continue
+            for key in self.keyz(name):
+                obj = getattr(self.objs, key)
                 if deleted and '__deleted__' in dir(obj):
                     continue
                 yield key, obj
 
-    def find(self, selector=None, index=None, deleted=False, match=None):
+    def find(self, name, selector, index=None, deleted=False):
         "find objects stored in the broker."
+        nrss = 0
         with lock:
-            if match:
-                match = self.long(match)
-            if selector is None:
-                selector = {}
-            nrss = 0
-            for key, obj in items(self.objs):
+            for key in self.keyz(self.long(name)):
+                obj = getattr(self.objs, key)
                 if deleted and '__deleted__' not in dir(obj):
                     continue
-                if match and not domatch(obj, match):
-                    continue
-                if selector and not search(obj, selector):
+                if not search(obj, selector):
                     continue
                 nrss += 1
                 if index is not None and nrss != int(index):
                     continue
                 yield (key, obj)
 
-    def first(self):
+    def first(self, name):
         "return first object."
-        for key in keys(self.objs):
-            return getattr(self.objs, key)
+        key = sorted(self.keyz(self.long(name), key= lambda x: fntime(x)))
+        return getattr(self.objs, key)
 
     def get(self, orig):
         "return object by origin (repr)"
         return getattr(self.objs, orig, None)
 
 
+    def keyz(self, key):
+        return [x for x in keys(self.objs) if key == x.split(os.sep)[0]]
+        
     def last(self, obj):
         "return last object saved."
-        result = sorted(self.all(fqn(obj)), key=lambda x: fntime(x[0]))
-        res = None
-        if result:
-            inp = result[-1]
-            res = inp[1]
-            update(obj, res)
-        return res
+        kyz = sorted(self.keyz(fqn(obj)), key=lambda x: fntime(x))
+        if kyz:
+           update(obj, getattr(self.objs, kyz[-1]))
 
     def long(self, txt):
         "expand to full qualified name."
-        if not txt:
-            return txt
         for qual in Broker.fqns:
-            if txt.lower() in qual.split(".")[-1].lower():
+            if txt.lower() == qual.split(".")[-1].lower():
                 return qual
         return txt
 

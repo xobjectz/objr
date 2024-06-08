@@ -8,11 +8,13 @@ import threading
 import time
 
 
-from .thread import launch
-from .utils  import name
+from objx        import Object
+from objr.run    import broker
+from objr.thread import launch
+from objr.utils  import name
 
 
-class Timer:
+class Timer(Object):
 
     "Timer"
 
@@ -23,6 +25,7 @@ class Timer:
         self.name  = thrname or name(func)
         self.state = {}
         self.timer = None
+        broker.add(self)
 
     def run(self):
         "run the payload in a thread."

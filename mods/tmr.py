@@ -10,23 +10,15 @@ import time as ttime
 
 
 from objx import update
-
-
-from objr.handler import Event
-from objr.run     import broker
-from objr.thread  import launch
-from objr.timer   import Timer
-from objr.utils   import laps
+from objr import Event, Timer, broker, laps, launch
 
 
 def init():
     "initialaze modules."
     for _fnm, obj in broker.all("timer"):
-        if "time" not in obj:
-            continue
         diff = float(obj.time) - ttime.time()
         if diff > 0:
-            bot = broker.first()
+            bot = broker.first("timer")
             evt = Event()
             update(evt, obj)
             evt.orig = object.__repr__(bot)
@@ -189,8 +181,6 @@ def tmr(event):
     if not event.rest:
         nmr = 0
         for _fnm, obj in broker.all('timer'):
-            if "time" not in obj:
-                continue
             lap = float(obj.time) - ttime.time()
             if lap > 0:
                 event.reply(f'{nmr} {obj.txt} {laps(lap)}')
@@ -222,13 +212,14 @@ def tmr(event):
     if not target or ttime.time() > target:
         event.reply("already passed given time.")
         return res
+    print(event.orig)
+    bot = broker.get(event.orig)
     event.time = target
     diff = target - ttime.time()
-    event.reply("ok " +  laps(diff))
     event.result = []
+    event.reply("ok " +  laps(diff))
     event.result.append(event.rest)
-    timer = Timer(diff, event.show, thrname=event.cmd)
+    timer = Timer(diff, bot.show, event, thrname=event.cmd)
     update(timer, event)
-    broker.add(timer)
     launch(timer.start)
     return res

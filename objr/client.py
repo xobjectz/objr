@@ -4,11 +4,12 @@
 "client"
 
 
-from .command import command
-from .command import scan as scancmd
-from .errors  import later
-from .handler import Event, Handler
-from .utils   import skip, spl
+from objr.cmds    import command
+from objr.cmds    import scan as scancmd
+from objr.errors  import later
+from objr.handler import Event, Handler
+from objr.run     import broker
+from objr.utils   import skip, spl
 
 
 class Client(Handler):
@@ -39,10 +40,11 @@ class Client(Handler):
 def cmnd(txt, outer=None):
     "do a command using the provided output function."
     clt = Client()
+    ids = broker.add(clt)
     if outer:
         clt.raw = outer
     evn = Event()
-    evn.orig = object.__repr__(clt)
+    evn.orig = ids
     evn.txt = txt
     command(clt, evn)
     evn.wait()

@@ -9,8 +9,8 @@ import threading
 import time
 
 
-from .errors import later
-from .utils  import name
+from objr.errors import later
+from objr.utils  import name
 
 
 class Thread(threading.Thread):
