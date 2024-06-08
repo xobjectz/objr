@@ -5,11 +5,13 @@
 
 
 import os
-import time
 
 
-from .disk import fetch, long, store, strip
-from .object import Default, fqn, search, update
+from objx import Default, fqn, search, update
+
+
+from .disk   import fetch, long, store, strip
+from .utils  import fntime
 
 
 def fns(mtc=""):
@@ -24,20 +26,6 @@ def fns(mtc=""):
                     fls = sorted(os.listdir(ddd))
                     for fll in fls:
                         yield strip(os.path.join(ddd, fll))
-
-
-def fntime(daystr):
-    "convert file name to it's saved time."
-    daystr = daystr.replace('_', ':')
-    datestr = ' '.join(daystr.split(os.sep)[-2:])
-    if '.' in datestr:
-        datestr, rest = datestr.rsplit('.', 1)
-    else:
-        rest = ''
-    timed = time.mktime(time.strptime(datestr, '%Y-%m-%d %H:%M:%S'))
-    if rest:
-        timed += float('.' + rest)
-    return timed
 
 
 def find(mtc, selector=None, index=None, deleted=False):

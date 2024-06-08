@@ -24,6 +24,7 @@
 """
 
 import os
+import pwd
 import readline # pylint: disable=W0611
 import sys
 import termios
@@ -42,6 +43,7 @@ from objr.handler import Event
 from objr.log     import debug, enable
 from objr.parse   import parse
 from objr.run     import broker
+from objr.utils   import cdir
 
 
 Cfg             = Default()
@@ -107,6 +109,7 @@ def daemon(verbose=False):
 
 
 def forever():
+    "run forever."
     while True:
         time.sleep(1.0)
 

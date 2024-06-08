@@ -19,15 +19,23 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objr.client  import Client, Command, laps, parse
+from objx  import Default, Object, keys
+
+
+from objr.client  import Client, scan
+from objr.command import Command
+from objr.errors  import errors
 from objr.handler import Event
 from objr.log     import debug, enable
-from objr.object  import Default, Object, keys
-from objr.run     import scan
-from objr.thread  import errors, launch
+from objr.parse   import parse
+from objr.thread  import launch
+from objr.utils   import laps
 
 
-from objr import mods as modules
+if os.path.exists("mods"):
+    import mods as modules
+else:
+    modules = None    
 
 
 LAP = 1
