@@ -4,7 +4,7 @@
 "runtime"
 
 
-from .broker  import Broker
+from objx import Broker
 
 
 broker = Broker()

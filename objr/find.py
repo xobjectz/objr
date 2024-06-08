@@ -7,11 +7,9 @@
 import os
 
 
-from objx import Default, fqn, search, update
-
-
-from .disk   import fetch, long, store, strip
-from .utils  import fntime
+from objx       import Default, fqn, search, update
+from objr.disk  import fetch, long, store, strip
+from objr.utils import fntime
 
 
 def fns(mtc=""):

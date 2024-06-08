@@ -4,14 +4,13 @@
 "broker"
 
 
+import os
+import time
 import _thread
 
 
-from objx import Object, fqn, ident, items, keys, search, update
-from objx import match as domatch
-
-
-from .utils import fntime
+from .object import Object, fqn, ident, items, keys, search, update
+from .object import match as domatch
 
 
 lock = _thread.allocate_lock()
@@ -103,7 +102,23 @@ class Broker:
         delattr(self.objs, rpr(obj))
 
 
+def fntime(daystr):
+    "convert file name to it's saved time."
+    daystr = daystr.replace('_', ':')
+    datestr = ' '.join(daystr.split(os.sep)[-2:])
+    if '.' in datestr:
+        datestr, rest = datestr.rsplit('.', 1)
+    else:
+        rest = ''
+    timed = time.mktime(time.strptime(datestr, '%Y-%m-%d %H:%M:%S'))
+    if rest:
+        timed += float('.' + rest)
+    return timed
+
+
+
 def __dir__():
     return (
         'Broker',
+        'fntime'
     )

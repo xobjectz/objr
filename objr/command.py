@@ -7,14 +7,11 @@
 import inspect
 
 
-from objx import Object
+from objx         import Object, parse
+from objr.errors  import later
 
 
-from .errors  import later
-from .parse   import parse
-
-
-class Command(Object): # pylint: disable=R0903
+class Command:
 
     "Command"
 

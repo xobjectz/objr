@@ -19,7 +19,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx  import Default, Object, keys
+from objx  import Default, Object, keys, parse
 
 
 from objr.client  import Client, scan
@@ -27,7 +27,6 @@ from objr.command import Command
 from objr.errors  import errors
 from objr.handler import Event
 from objr.log     import debug, enable
-from objr.parse   import parse
 from objr.thread  import launch
 from objr.utils   import laps
 

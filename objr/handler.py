@@ -9,10 +9,8 @@ import threading
 import _thread
 
 
-from objx import Default, Object
-
-
-from .thread import launch
+from objx        import Default, Object
+from objr.thread import launch
 
 
 rpr = object.__repr__
