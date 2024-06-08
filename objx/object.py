@@ -30,6 +30,14 @@ class Object: # pylint: disable=R0902
         return str(self.__dict__)
 
 
+class Default(Object): # pylint: disable=R0902,R0903
+
+    "Default"
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
+
+
 def construct(obj, *args, **kwargs):
     "construct an object from provided arguments."
     if args:
@@ -118,6 +126,14 @@ def keys(obj):
     return list(obj.__dict__.keys())
 
 
+def match(obj, txt):
+    "check if object matches provided values."
+    for key in keys(obj):
+        if txt in key:
+            return True
+    return False
+
+
 def read(obj, pth):
     "read an object from file path."
     with lock:
@@ -129,9 +145,11 @@ def search(obj, selector):
     "check if object matches provided values."
     res = False
     if not selector:
-        return True
+        return res
     for key, value in items(selector):
         val = getattr(obj, key, None)
+        if not val:
+            continue
         if str(value).lower() in str(val).lower():
             res = True
         else:
@@ -261,6 +279,7 @@ def pjoin(*args):
 def __dir__():
     return (
         'Object',
+        'Default',
         'construct',
         'dump',
         'dumps',
