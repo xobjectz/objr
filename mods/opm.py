@@ -98,7 +98,7 @@ def exp(event):
     "export to opml."
     event.reply(TEMPLATE)
     nrs = 0
-    for _fn, objr in items(broker.objs):
+    for _fn, objr in broker.all("rss"):
         nrs += 1
         obj = Default()
         update(obj, objr)

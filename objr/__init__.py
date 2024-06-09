@@ -6,7 +6,7 @@
 
 from .classes  import Classes
 from .client   import Client, cmnd, scan
-from .commands import Command, command
+from .commands import Commands, command
 from .default  import Default
 from .disk     import Workdir
 from .errors   import Errors, errors, later
@@ -48,7 +48,7 @@ objxdir = (
 objrdir = (
         'Classes',
         'Client',
-        'Command',
+        'Commands',
         'Errors',
         'Event',
         'Handler',

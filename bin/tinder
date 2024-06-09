@@ -20,7 +20,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from objr import Default, Object, keys, parse
-from objr import Client, Command, Errors, Event
+from objr import Client, Commands, Errors, Event
 from objr import debug, errors, laps, launch, scan
 
 
@@ -109,7 +109,7 @@ def lsmod(pth):
 
 def payload(clt):
     "do payload."
-    cmds = sorted(list(keys(Command.cmds)))
+    cmds = sorted(list(keys(Commands.cmds)))
     #random.shuffle(cmds)
     with paylock:
         nmr = 0
@@ -146,7 +146,7 @@ def main():
     "main"
     scan(modules, Cfg.mod)
     nrs = Cfg.index or 1
-    nrcommand = len(Command.cmds) or 1
+    nrcommand = len(Commands.cmds) or 1
     thrs = []
     cli = CLI()
     cli.start()

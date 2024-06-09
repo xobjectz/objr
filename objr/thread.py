@@ -57,7 +57,6 @@ def launch(func, *args, **kwargs):
     return thread
 
 
-
 def __dir__():
     return (
         'Thread',

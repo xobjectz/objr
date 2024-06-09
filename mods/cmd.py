@@ -4,9 +4,9 @@
 "list of commands."
 
 
-from objr import Command
+from objr import Commands
 
 
 def cmd(event):
     "list commands."
-    event.reply(",".join(sorted(list(Command.cmds))))
+    event.reply(",".join(sorted(list(Commands.cmds))))

@@ -12,9 +12,9 @@ from .parser import parse
 from .errors import later
 
 
-class Command: # pylint: disable=R0903
+class Commands: # pylint: disable=R0903
 
-    "Command"
+    "Commands"
 
     cmds = Object()
 
@@ -22,13 +22,13 @@ class Command: # pylint: disable=R0903
     @staticmethod
     def add(func):
         "add command."
-        setattr(Command.cmds, func.__name__, func)
+        setattr(Commands.cmds, func.__name__, func)
 
 
 def command(bot, evt):
     "check for and run a command."
     parse(evt)
-    func = getattr(Command.cmds, evt.cmd, None)
+    func = getattr(Commands.cmds, evt.cmd, None)
     if func:
         try:
             func(evt)
@@ -44,12 +44,12 @@ def scan(mod) -> None:
         if key.startswith("cb"):
             continue
         if 'event' in cmd.__code__.co_varnames:
-            Command.add(cmd)
+            Commands.add(cmd)
 
 
 def __dir__():
     return (
-        'Command',
+        'Commands',
         'command',
         'scan'
     )

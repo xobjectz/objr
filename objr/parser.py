@@ -59,3 +59,9 @@ def parse(obj, txt=None):
         obj.txt  = obj.cmd + " " + obj.rest
     else:
         obj.txt = obj.cmd or ""
+
+
+def __dir__():
+    return (
+        'parse',
+    )
