@@ -20,7 +20,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from objr import Default, Object, keys, parse
-from objr import Classes, Client, Command, Errors, Event, Workdir
+from objr import Client, Command, Errors, Event
 from objr import debug, errors, laps, launch, scan
 
 

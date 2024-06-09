@@ -269,23 +269,23 @@ def pjoin(*args):
 
 
 def __dir__():
-    return (
+    return sorted(
         'Object',
         'construct',
         'dump',
-        'dumps',
         'edit',
         'fmt',
         'fqn',
+        'dumps',
         'hook',
         'ident',
-        'items',
         'keys',
         'load',
+        'items',
         'loads',
-        'read',
         'search',
         'update',
+        'read',
         'values',
         'write'
     )
