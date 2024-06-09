@@ -7,10 +7,14 @@
 from .classes  import Classes
 from .client   import Client, cmnd, scan
 from .commands import Command, command
+from .default  import Default
+from .disk     import Workdir
 from .errors   import Errors, errors, later
 from .event    import Event
 from .handler  import Handler
 from .log      import Logging, debug
+from .object   import *
+from .parser   import parse
 from .repeater import Repeater
 from .run      import broker
 from .thread   import launch
@@ -18,8 +22,30 @@ from .timer    import Timer
 from .utils    import *
 
 
-def __dir__():
-    return (
+objxdir = (
+        'Object',
+        'construct',
+        'dump',
+        'dumps',
+        'edit',
+        'fmt',
+        'fqn',
+        'hook',
+        'ident',
+        'items',
+        'keys',
+        'load',
+        'loads',
+        'read',
+        'search',
+        'update',
+        'values',
+        'write'
+    )
+
+
+
+objrdir = (
         'Classes',
         'Client',
         'Command',
@@ -30,6 +56,7 @@ def __dir__():
         'Repeater',
         'Thread',
         'Timer',
+        'Workdir',
         'broker',
         'cmnd',
         'command',
@@ -43,3 +70,7 @@ def __dir__():
         'scan',
         'spl'
     )
+
+
+def __dir__():
+    return sorted(objxdir + objrdir)

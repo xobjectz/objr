@@ -4,8 +4,7 @@
 "locate"
 
 
-from objx import fmt
-from objr import broker
+from objr import broker, fmt
 
 
 def fnd(event):

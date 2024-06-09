@@ -37,7 +37,8 @@ class Broker:
     def all(self, name=None, deleted=False):
         "return all objects."
         with lock:
-            name = self.long(name)
+            if name:
+                name = self.long(name)
             for key in self.keyz(name):
                 obj = getattr(self.objs, key)
                 if deleted and '__deleted__' in dir(obj):

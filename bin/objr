@@ -34,15 +34,14 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objx import Default, parse
-
-
-from objr.client import Client, cmnd, init, scan
-from objr.errors import Errors, errors
-from objr.event  import Event
-from objr.log    import Logging, debug
-from objr.run    import broker
-from objr.utils  import cdir
+from objr.client  import Client, cmnd, init, scan
+from objr.default import Default
+from objr.errors  import Errors, errors
+from objr.event   import Event
+from objr.log     import Logging, debug
+from objr.parser  import parse
+from objr.run     import broker
+from objr.utils   import cdir
 
 
 Cfg             = Default()

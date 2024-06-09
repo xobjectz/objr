@@ -271,7 +271,6 @@ def pjoin(*args):
 def __dir__():
     return (
         'Object',
-        'Default',
         'construct',
         'dump',
         'dumps',

@@ -17,7 +17,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from objx import Default, Object, fmt, fntime, update, values
+from objr import Default, Object, fmt, fntime, update, values
 from objr import Repeater, broker, laps, launch, spl
 
 

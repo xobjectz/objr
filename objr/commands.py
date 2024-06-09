@@ -8,7 +8,7 @@ import inspect
 
 
 from .object import Object
-from .parse  import parse
+from .parser import parse
 from .errors import later
 
 

@@ -15,9 +15,9 @@ import time
 import _thread
 
 
-from objx     import Default, Object, edit, fmt, keys, values
-from objr     import Client, Event, Logging
-from objr     import broker, command, debug, later, launch
+from objr import Default, Object, edit, fmt, keys, values
+from objr import Client, Event, Logging
+from objr import broker, command, debug, later, launch
 
 
 NAME    = __file__.split(os.sep)[-3]
