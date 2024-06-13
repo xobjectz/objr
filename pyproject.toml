@@ -9,12 +9,15 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "objr"
 description = "objects runtime"
-version = "121"
+version = "131"
 authors = [
-    {name = "xobjectz",email = "objx@proton.me"},
+    {name = "xobjectz", email = "objx@proton.me"},
 ]
 readme = "README.rst"
 license = {text="Public Domain"}
+dependencies = [
+    "objx==82",
+]
 classifiers = [ 
     'Development Status :: 3 - Alpha',
     'License :: Public Domain',
@@ -32,7 +35,7 @@ classifiers = [
 
 [tool.setuptools]
 packages = [
-    'objr',
+    'objr'
 ]
 zip-safe=true
 
