@@ -20,7 +20,8 @@ from .timer    import Timer
 from .utils    import *
 
 
-objrdir = (
+def __dir__():
+    return (
         'Classes',
         'Client',
         'Commands',
@@ -45,7 +46,3 @@ objrdir = (
         'scan',
         'spl'
     )
-
-
-def __dir__():
-    return objrdir
