@@ -7,9 +7,10 @@
 from .classes  import Classes
 from .client   import Client, cmnd, scan
 from .commands import Commands, command
-from .disk     import Workdir
+from .disk     import Workdir, fetch, sync
 from .errors   import Errors, errors, later
 from .event    import Event
+from .find     import find, last
 from .handler  import Handler
 from .log      import Logging, debug
 from .parser   import parse
@@ -40,6 +41,7 @@ def __dir__():
         'errors',
         'init',
         'laps',
+        'last',
         'later',
         'launch',
         'name',
