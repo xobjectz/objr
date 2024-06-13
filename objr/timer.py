@@ -8,10 +8,10 @@ import threading
 import time
 
 
-from .object import Object
-from .run    import broker
-from .thread import launch
-from .utils  import name
+from objx        import Object
+from objr.run    import broker
+from objr.thread import launch
+from objr.utils  import named
 
 
 class Timer(Object):
@@ -22,7 +22,7 @@ class Timer(Object):
         self.args  = args
         self.func  = func
         self.sleep = sleep
-        self.name  = thrname or name(func)
+        self.name  = thrname or named(func)
         self.state = {}
         self.timer = None
         broker.add(self)

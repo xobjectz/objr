@@ -7,9 +7,9 @@
 import inspect
 
 
-from .object import Object
-from .parser import parse
-from .errors import later
+from objx        import Object
+from objr.parser import parse
+from objr.errors import later
 
 
 class Commands: # pylint: disable=R0903

@@ -81,7 +81,7 @@ def laps(seconds, short=True):
     return txt
 
 
-def name(obj):
+def named(obj):
     "return a full qualified name of an object/function/module."
     # pylint: disable=R0911
     typ = type(obj)
@@ -132,13 +132,12 @@ def strip(pth, nmr=3):
     return os.sep.join(pth.split(os.sep)[-nmr:])
 
 
-
 def __dir__():
     return (
         'fntime',
         'forever',
         'laps',
-        'name',
+        'named',
         'pjoin',
         'shortid',
         'skip',

@@ -9,8 +9,8 @@ import pathlib
 import _thread
 
 
-from .object  import Object, ident, read, write
-from .utils   import strip
+from objx       import Object, ident, read, write
+from objr.utils import strip
 
 
 lock = _thread.allocate_lock()

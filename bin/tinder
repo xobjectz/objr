@@ -19,9 +19,9 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objr import Default, Object, keys, parse
+from objx import Default, Object, keys
 from objr import Client, Commands, Errors, Event
-from objr import debug, errors, laps, launch, scan
+from objr import debug, errors, laps, launch, parse, scan
 
 
 if os.path.exists("mods"):

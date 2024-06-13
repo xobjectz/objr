@@ -8,8 +8,8 @@ import os
 import _thread
 
 
-from .object import Object, fqn, ident, keys, search, update
-from .utils  import fntime
+from objx        import Object, fqn, ident, keys, search, update
+from objr.utils  import fntime
 
 
 lock = _thread.allocate_lock()

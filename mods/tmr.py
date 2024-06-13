@@ -9,7 +9,8 @@ import re
 import time as ttime
 
 
-from objr import Event, Timer, broker, laps, launch, update
+from objx import update 
+from objr import Event, Timer, broker, laps, launch
 
 
 def init():

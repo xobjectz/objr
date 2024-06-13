@@ -7,8 +7,8 @@
 import inspect
 
 
-from .disk    import Workdir
-from .object  import Object
+from objx      import Object
+from objr.disk import Workdir
 
 
 class Classes: # pylint: disable=R0903

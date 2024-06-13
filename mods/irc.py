@@ -15,7 +15,7 @@ import time
 import _thread
 
 
-from objr import Default, Object, edit, fmt, keys, values
+from objx import Default, Object, edit, fmt, keys, values
 from objr import Client, Event, Logging
 from objr import broker, command, debug, later, launch
 

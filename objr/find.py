@@ -7,11 +7,10 @@
 import os
 
 
-from .classes import Classes
-from .default import Default
-from .object  import fqn, search, update
-from .disk    import Workdir, fetch
-from .utils   import fntime, strip
+from objx         import Default, fqn, search, update
+from objr.classes import Classes
+from objr.disk    import Workdir, fetch
+from objr.utils   import fntime, strip
 
 
 def fns(mtc=""):

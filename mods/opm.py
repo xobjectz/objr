@@ -4,7 +4,7 @@
 "outline processor markup language"
 
 
-from objr import Default, construct, items, update
+from objx import Default, construct, items, update
 from objr import broker, shortid, spl
 
 
