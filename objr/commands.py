@@ -1,28 +1,37 @@
 # This file is placed in the Public Domain.
 
 
-"client"
+"commands"
 
 
 import inspect
 
 
-from objx        import Object
-from objr.parser import parse
-from objr.errors import later
+from .object import Object
+from .parse  import parse
 
 
-class Commands: # pylint: disable=R0903
+class Commands:
 
     "Commands"
 
-    cmds = Object()
-
+    cmds     = Object()
+    modnames = Object()
 
     @staticmethod
     def add(func):
         "add command."
         setattr(Commands.cmds, func.__name__, func)
+        setattr(Commands.modnames, func.__name__, func.__module__)
+
+    @staticmethod
+    def scan(mod) -> None:
+        "scan module for commands."
+        for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
+            if key.startswith("cb"):
+                continue
+            if 'event' in cmdz.__code__.co_varnames:
+                Commands.add(cmdz)
 
 
 def command(bot, evt):
@@ -30,26 +39,13 @@ def command(bot, evt):
     parse(evt)
     func = getattr(Commands.cmds, evt.cmd, None)
     if func:
-        try:
-            func(evt)
-        except Exception as exc: # pylint: disable=W0718
-            later(exc)
+        func(evt)
     bot.show(evt)
     evt.ready()
-
-
-def scan(mod) -> None:
-    "scan module for commands."
-    for key, cmd in inspect.getmembers(mod, inspect.isfunction):
-        if key.startswith("cb"):
-            continue
-        if 'event' in cmd.__code__.co_varnames:
-            Commands.add(cmd)
 
 
 def __dir__():
     return (
         'Commands',
-        'command',
-        'scan'
+        'command'
     )

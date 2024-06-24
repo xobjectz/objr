@@ -1,12 +1,11 @@
 # This file is placed in the Public Domain.
-#
-# pylint: disable=R0903
+# pylint: disable=R0902,R0903
 
 
 "configuration"
 
 
-from . import Default
+from .default import Default
 
 
 class Config(Default):

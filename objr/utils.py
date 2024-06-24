@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=R0911,C0415,W0212,E0401
 
 
 "utilities"
@@ -8,8 +9,6 @@ import os
 import pathlib
 import time
 import types
-import uuid
-import _thread
 
 
 def cdir(pth):
@@ -30,15 +29,6 @@ def fntime(daystr):
     if rest:
         timed += float('.' + rest)
     return timed
-
-
-def forever():
-    "run forever."
-    while True:
-        try:
-            time.sleep(1.0)
-        except Exception: # pylint: disable=W0718
-            _thread.interrupt_main()
 
 
 def laps(seconds, short=True):
@@ -83,7 +73,6 @@ def laps(seconds, short=True):
 
 def named(obj):
     "return a full qualified name of an object/function/module."
-    # pylint: disable=R0911
     typ = type(obj)
     if isinstance(typ, types.ModuleType):
         return obj.__name__
@@ -98,24 +87,6 @@ def named(obj):
     if '__name__' in dir(obj):
         return f'{obj.__class__.__name__}.{obj.__name__}'
     return None
-
-
-def pjoin(*args):
-    "path join."
-    return "/".join(args)
-
-
-def shortid():
-    "create short id."
-    return str(uuid.uuid4())[:8]
-
-
-def skip(nme, skipp):
-    "check for skipping"
-    for skp in spl(skipp):
-        if skp in nme:
-            return True
-    return False
 
 
 def spl(txt):
@@ -134,13 +105,10 @@ def strip(pth, nmr=3):
 
 def __dir__():
     return (
+        'cdir',
         'fntime',
-        'forever',
         'laps',
         'named',
-        'pjoin',
-        'shortid',
-        'skip',
         'spl',
         'strip'
     )

@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-#
 # pylint: disable=R0911
 
 
@@ -10,7 +9,8 @@ import json
 
 
 from .locks  import lock
-from .object import Object, cdir
+from .object import Object
+from .utils  import cdir
 
 
 class ObjectEncoder(json.JSONEncoder):

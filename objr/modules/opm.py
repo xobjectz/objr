@@ -4,8 +4,14 @@
 "outline processor markup language"
 
 
-from objx import Default, construct, items, update
-from objr import broker, shortid, spl
+import os
+import uuid
+
+
+from ..default import Default
+from ..object  import construct, update
+from ..persist import find, sync
+from ..utils   import spl
 
 
 from .rss import Rss
@@ -89,6 +95,11 @@ class Parser:
         return result
 
 
+def shortid():
+    "create short id."
+    return str(uuid.uuid4())[:8]
+
+
 def attrs(obj, txt):
     "parse attributes into the object."
     update(obj, Parser.parse(txt))
@@ -98,7 +109,7 @@ def exp(event):
     "export to opml."
     event.reply(TEMPLATE)
     nrs = 0
-    for _fn, objr in broker.all("rss"):
+    for _fn, objr in find("rss"):
         nrs += 1
         obj = Default()
         update(obj, objr)
@@ -116,6 +127,9 @@ def imp(event):
         event.reply("imp <filename>")
         return
     fnm = event.args[0]
+    if not os.path.exists(fnm):
+        event.reply(f"no {fnm} file found.")
+        return
     with open(fnm, "r", encoding="utf-8") as file:
         txt = file.read()
     prs = Parser()
@@ -129,8 +143,7 @@ def imp(event):
         construct(rss, obj)
         rss.rss = rss.xmlUrl
         rss.insertid = insertid
-        broker.add(rss)
+        sync(rss)
         nrs += 1
     if nrs:
         event.reply(f"added {nrs} urls.")
-        

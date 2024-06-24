@@ -4,15 +4,12 @@
 "broker"
 
 
-import os
-import _thread
+from .locks  import brokerlock
+from .object import Object, fqn, ident, keys, search, update
+from .utils  import fntime
 
 
-from objx        import Object, fqn, ident, keys, search, update
-from objr.utils  import fntime
-
-
-lock = _thread.allocate_lock()
+SEP = "/"
 
 
 class Broker:
@@ -24,19 +21,9 @@ class Broker:
     def __init__(self):
         self.objs = Object()
 
-    def add(self, obj):
-        "add an object to the broker."
-        with lock:
-            ids = ident(obj)
-            setattr(self.objs, ids, obj)
-            name = ids.split(os.sep, maxsplit=1)[0]
-            if name not in Broker.fqns:
-                Broker.fqns.append(name)
-            return ids
-
     def all(self, name=None, deleted=False):
         "return all objects."
-        with lock:
+        with brokerlock:
             if name:
                 name = self.long(name)
             for key in self.keyz(name):
@@ -48,7 +35,7 @@ class Broker:
     def find(self, name, selector, index=None, deleted=False):
         "find objects stored in the broker."
         nrss = 0
-        with lock:
+        with brokerlock:
             for key in self.keyz(self.long(name)):
                 obj = getattr(self.objs, key)
                 if deleted and '__deleted__' not in dir(obj):
@@ -69,16 +56,17 @@ class Broker:
         "return object by origin (repr)"
         return getattr(self.objs, orig, None)
 
-
     def keyz(self, key):
         "return all matching keys."
-        return [x for x in keys(self.objs) if key == x.split(os.sep)[0]]
+        return [x for x in keys(self.objs) if key == x.split(SEP, maxsplit=1)[0]]
 
     def last(self, obj):
         "return last object saved."
         kyz = sorted(self.keyz(fqn(obj)), key=fntime)
         if kyz:
             update(obj, getattr(self.objs, kyz[-1]))
+            return kyz[-1]
+        return None
 
     def long(self, txt):
         "expand to full qualified name."
@@ -87,9 +75,18 @@ class Broker:
                 return qual
         return txt
 
+    def register(self, obj):
+        "add an object to the broker."
+        with brokerlock:
+            ids = ident(obj)
+            setattr(self.objs, ids, obj)
+            name = ids.split(SEP, maxsplit=1)[0]
+            if name not in Broker.fqns:
+                Broker.fqns.append(name)
+            return ids
+
 
 def __dir__():
     return (
         'Broker',
-        'fntime'
     )

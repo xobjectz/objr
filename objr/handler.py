@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=W0718
 
 
 "handler"
@@ -9,8 +10,9 @@ import threading
 import _thread
 
 
-from objx        import Object
-from objr.thread import launch
+from .errors import later
+from .object import Object
+from .thread import launch
 
 
 class Handler:
@@ -25,11 +27,16 @@ class Handler:
 
     def callback(self, evt):
         "call callback based on event type."
+        evt.orig = repr(self)
         func = getattr(self.cbs, evt.type, None)
         if not func:
             evt.ready()
             return
-        evt._thr = launch(func, self, evt) # pylint: disable=W0212
+        try:
+            func(self, evt)
+        except Exception as ex:
+            later(ex)
+            evt.ready()
 
     def loop(self):
         "proces events until interrupted."

@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=R0912
 
 
 "timer"
@@ -9,8 +10,12 @@ import re
 import time as ttime
 
 
-from objx import update 
-from objr import Event, Timer, broker, laps, launch
+from ..event  import Event
+from ..object import update
+from ..run    import broker
+from ..timer  import Timer
+from ..utils  import laps
+from ..thread import launch
 
 
 def init():
@@ -21,7 +26,7 @@ def init():
             bot = broker.first("timer")
             evt = Event()
             update(evt, obj)
-            evt.orig = object.__repr__(bot)
+            evt.orig = repr(bot)
             timer = Timer(diff, evt.show)
             launch(timer.start)
 
@@ -176,7 +181,6 @@ def today():
 
 def tmr(event):
     "set timer."
-    # pylint: disable=R0912
     res = None
     if not event.rest:
         nmr = 0
@@ -212,7 +216,6 @@ def tmr(event):
     if not target or ttime.time() > target:
         event.reply("already passed given time.")
         return res
-    print(event.orig)
     bot = broker.get(event.orig)
     event.time = target
     diff = target - ttime.time()

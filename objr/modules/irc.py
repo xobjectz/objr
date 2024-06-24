@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=R0902,R0903
 
 
 "internet relay chat"
@@ -15,12 +16,22 @@ import time
 import _thread
 
 
-from objx import Default, Object, edit, fmt, keys, values
-from objr import Client, Event, Logging
-from objr import broker, command, debug, later, launch
+from ..cli      import CLI
+from ..commands import command
+from ..default  import Default
+from ..errors   import later
+from ..event    import Event
+from ..handler  import Handler
+from ..log      import Logging, debug
+from ..object   import Object, edit, fmt, keys
+from ..persist  import last, sync
+from ..run      import broker
+from ..thread   import launch
 
 
 NAME    = __file__.split(os.sep)[-3]
+
+
 saylock = _thread.allocate_lock()
 
 
@@ -32,22 +43,11 @@ def init():
     irc = IRC()
     irc.start()
     irc.events.joined.wait()
+    debug(f'started {fmt(irc.cfg, skip="password")}')
     return irc
 
 
-def shutdown():
-    "shutdown irc bot."
-    for bot in values(broker.objs):
-        if "irc" not in str(type(bot)).lower():
-            continue
-        debug(f"IRC stopping {repr(bot)}")
-        bot.state.pongcheck = True
-        bot.state.keeprunning = False
-        bot.events.connected.clear()
-        bot.stop()
-
-
-class Config(Default): # pylint: disable=R0902,R0903
+class Config(Default):
 
     "Config"
 
@@ -75,7 +75,6 @@ class Config(Default): # pylint: disable=R0902,R0903
         self.realname = self.realname or Config.realname
         self.server = self.server or Config.server
         self.username = self.username or Config.username
-        broker.add(self)
 
 
 class TextWrap(textwrap.TextWrapper):
@@ -95,7 +94,7 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class Output():
+class Output:
 
     "Output"
 
@@ -165,12 +164,13 @@ class Output():
         return 0
 
 
-class IRC(Client, Output):
+class IRC(CLI, Handler, Output):
 
     "IRC"
 
     def __init__(self):
-        Client.__init__(self)
+        CLI.__init__(self)
+        Handler.__init__(self)
         Output.__init__(self)
         self.buffer = []
         self.cfg = Config()
@@ -199,7 +199,7 @@ class IRC(Client, Output):
         self.register('PRIVMSG', cb_privmsg)
         self.register('QUIT', cb_quit)
         self.register("366", cb_ready)
-        broker.add(self)
+        broker.register(self)
 
     def announce(self, txt):
         "announce on all channels."
@@ -500,13 +500,13 @@ class IRC(Client, Output):
 
     def start(self):
         "start bot."
-        broker.last(self.cfg)
+        last(self.cfg)
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.events.connected.clear()
         self.events.joined.clear()
         launch(Output.out, self)
-        launch(Client.start, self)
+        launch(Handler.start, self)
         launch(
                self.doconnect,
                self.cfg.server or "localhost",
@@ -522,7 +522,7 @@ class IRC(Client, Output):
         self.disconnect()
         self.dostop.set()
         self.oput(None, None)
-        Client.stop(self)
+        Handler.stop(self)
 
     def wait(self):
         "wait for ready."
@@ -615,7 +615,7 @@ def cb_quit(bot, evt):
 def cfg(event):
     "configure command."
     config = Config()
-    broker.last(config)
+    last(config)
     if not event.sets:
         event.reply(
                     fmt(
@@ -626,7 +626,7 @@ def cfg(event):
                    )
     else:
         edit(config, event.sets)
-        broker.add(config)
+        sync(config)
         event.reply('ok')
 
 

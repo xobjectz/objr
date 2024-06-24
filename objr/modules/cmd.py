@@ -1,10 +1,10 @@
 # This file is placed in the Public Domain.
 
 
-"list of commands."
+"list of commands"
 
 
-from objr import Commands
+from ..commands import Commands
 
 
 def cmd(event):

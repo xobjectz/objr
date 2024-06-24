@@ -42,7 +42,8 @@ AUTHOR
 
 ::
 
-    Bart Thate <bthate@dds.nl>
+    xobjectz <objx@proton.me>
+
 
 COPYRIGHT
 

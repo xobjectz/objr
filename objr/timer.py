@@ -1,17 +1,16 @@
 # This file is placed in the Public Domain.
 
 
-"timer"
+"at a specific time"
 
 
-import threading
 import time
+import threading
 
 
-from objx        import Object
-from objr.run    import broker
-from objr.thread import launch
-from objr.utils  import named
+from .object import Object
+from .thread import launch
+from .utils  import named
 
 
 class Timer(Object):
@@ -25,7 +24,6 @@ class Timer(Object):
         self.name  = thrname or named(func)
         self.state = {}
         self.timer = None
-        broker.add(self)
 
     def run(self):
         "run the payload in a thread."
