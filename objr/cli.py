@@ -6,6 +6,7 @@
 
 
 from .commands import command
+from .event    import Event
 from .handler  import Handler
 from .object   import Object
 
@@ -35,6 +36,18 @@ class CLI(Handler):
         "show results into a channel."
         for txt in evt.result:
             self.say(evt.channel, txt)
+
+
+def cmnd(txt, outer=print):
+    "do a command using the provided output function."
+    cli = CLI()
+    cli.out = outer
+    evn = Event()
+    evn.txt = txt
+    command(cli, evn)
+    evn.wait()
+    return evn
+
 
 
 def __dir__():
