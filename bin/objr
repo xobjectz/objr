@@ -16,6 +16,9 @@ import termios
 import time
 
 
+sys.path.insert(0, os.getcwd())
+
+
 from objr.cli      import CLI
 from objr.console  import Console
 from objr.errors   import Errors, errors
