@@ -29,7 +29,7 @@ attrs1 = (
     "save",
     "setdefault",
     "update",
-    "values",
+    "values"
 )
 
 attrs2 = (
