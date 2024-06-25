@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
-# pylint: disable=W0212,W0718,E0401
+# pylint: disable=W0212,E0401
 
 
 "main"
@@ -17,16 +17,14 @@ import time
 
 
 from objr.cli      import CLI
-from objr.commands import Commands, command
 from objr.console  import Console
-from objr.errors   import Errors, errors, later
-from objr.event    import Event
+from objr.errors   import Errors, errors
 from objr.help     import TXT
 from objr.log      import Logging
+from objr.main     import cmnd, init, scan
 from objr.parse    import parse
-from objr.persist  import Persist, skel
+from objr.persist  import skel
 from objr.run      import Cfg
-from objr.utils    import spl
 
 
 from objr import modules
@@ -37,17 +35,6 @@ if os.path.exists("mods"):
     import mods as MODS
 else:
     MODS = None
-
-
-def cmnd(txt, outer=print):
-    "do a command using the provided output function."
-    cli = CLI()
-    cli.out = outer
-    evn = Event()
-    evn.txt = txt
-    command(cli, evn)
-    evn.wait()
-    return evn
 
 
 def daemon(pidfile, verbose=False):
@@ -74,41 +61,6 @@ def daemon(pidfile, verbose=False):
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(pidfile, "w", encoding="utf-8") as fds:
         fds.write(str(os.getpid()))
-
-
-def init(pkg, modstr, disable=None):
-    "scan modules for commands and classes"
-    mds = []
-    for mod in spl(modstr):
-        if disable and mod in spl(disable):
-            continue
-        module = getattr(pkg, mod, None)
-        if not module:
-            continue
-        if "init" not in dir(module):
-            continue
-        try:
-            module.init()
-        except Exception as ex:
-            later(ex)
-    return mds
-
-
-def scan(pkg, modstr, disable=None):
-    "scan modules for commands and classes"
-    mds = []
-    dirr = sorted([x for x in dir(pkg) if not x.startswith("__")])
-    for modname in spl(modstr):
-        if modname not in dirr:
-            continue
-        if disable and modname in spl(disable):
-            continue
-        module = getattr(pkg, modname, None)
-        if not module:
-            continue
-        Commands.scan(module)
-        Persist.scan(module)
-    return mds
 
 
 def modnames():
@@ -188,4 +140,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    wrapped()

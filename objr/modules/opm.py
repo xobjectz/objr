@@ -109,10 +109,10 @@ def exp(event):
     "export to opml."
     event.reply(TEMPLATE)
     nrs = 0
-    for _fn, objr in find("rss"):
+    for _fn, rss in find("rss"):
         nrs += 1
         obj = Default()
-        update(obj, objr)
+        update(obj, rss)
         name = obj.name or f"url{nrs}"
         txt = f'<outline name="{name}" display_list="{obj.display_list}" xmlUrl="{obj.rss}"/>'
         event.reply(" "*12 + txt)

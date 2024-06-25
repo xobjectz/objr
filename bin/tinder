@@ -25,7 +25,7 @@ from objr.default  import Default
 from objr.errors   import Errors
 from objr.event    import Event
 from objr.log      import Logging
-from objr.main     import modnames, scan
+from objr.main     import scan
 from objr.run      import broker
 from objr.object   import Object, ident, keys
 from objr.parse    import parse
@@ -36,7 +36,13 @@ from objr.utils    import laps
 
 
 from objr import modules
-from objr import user as mods
+from objr import user
+
+
+if os.path.exists("mods"):
+    import mods as MODS
+else:
+    MODS = None
 
 
 LAP = 1
@@ -102,6 +108,11 @@ def consume(evts):
     return res
 
 
+def modnames():
+    "list all modules."
+    return sorted({x for x in dir(modules) + dir(user) + dir(MODS) if not x.startswith("__")})
+
+
 def payload(clt):
     "do payload."
     cmds = sorted(list(keys(Commands.cmds)))
@@ -110,7 +121,7 @@ def payload(clt):
         for cmdd in cmds:
             for ex in getattr(param, cmdd, [""]):
                 evt = Event()
-                evt.channel = "#nixt"
+                evt.channel = "#objr"
                 evt.orig = repr(clt)
                 evt.txt = cmdd + " " + ex
                 evt.type = "command"
@@ -145,7 +156,8 @@ def main():
         DTE = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
         print(f'{DTE} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
     scan(modules, Cfg.mod, Cfg.dis)
-    scan(mods, Cfg.mod, Cfg.dis)
+    scan(user, Cfg.mod, Cfg.dis)
+    scan(MODS, Cfg.mod, Cfg.dis)
     nrs = Cfg.index or 1
     nrcommand = len(Commands.cmds) or 1
     thrs = []
