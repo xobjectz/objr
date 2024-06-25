@@ -1,41 +1,16 @@
 # This file is placed in the Public Domain.
-# pylint: disable=W0212,W0718,E0401
+# pylint: disable=W0718
 
 
 "main"
 
 
-import getpass
-import os
-import pathlib
-import pwd
-import readline
-import sys
-import termios
-import time
-
-
 from .cli      import CLI
 from .commands import Commands, command
-from .console  import Console
-from .errors   import Errors, errors, later
+from .errors   import later
 from .event    import Event
-from .help     import TXT
-from .log      import Logging
-from .parse    import parse
-from .persist  import Persist, skel
-from .run      import Cfg
+from .persist  import Persist
 from .utils    import spl
-
-
-from . import modules
-from . import user
-
-
-if os.path.exists("mods"):
-    import mods as MODS
-else:
-    MODS = None
 
 
 def cmnd(txt, outer=print):
@@ -84,15 +59,9 @@ def scan(pkg, modstr, disable=None):
     return mds
 
 
-def modnames():
-    "list all modules."
-    return sorted({x for x in dir(modules) + dir(user) + dir(MODS) if not x.startswith("__")})
-
-
 def __dir__():
     return (
         'cmnd',
         'init',
-        'scan',
-        'modnames'
+        'scan'
     )

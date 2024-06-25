@@ -1,6 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=W0212,W0718,E0401
-
+# pylint: disable=W0212,E0401
 
 "main"
 
@@ -16,17 +15,14 @@ import time
 
 
 from .cli      import CLI
-from .commands import Commands, command
 from .console  import Console
-from .errors   import Errors, errors, later
-from .event    import Event
+from .errors   import Errors, errors
 from .help     import TXT
 from .log      import Logging
-from .main     import cmnd, init, modnames, scan
+from .main     import cmnd, init, scan
 from .parse    import parse
-from .persist  import Persist, skel
+from .persist  import skel
 from .run      import Cfg
-from .utils    import spl
 
 
 from . import modules
