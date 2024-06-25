@@ -1,7 +1,7 @@
 grep -R objr objr
-grep -R "print(" objr bin/tinder
-grep -R __import__ objr bin/tinder
-grep -R importlib objr bin/tinder
-grep -R "import sys" objr bin/tinder
-#grep -R sys objr bin/tinder
-#grep -R "import os" objr bin/tinder
+grep -R "print(" objrr
+grep -R __import__ objr
+grep -R importlib objr
+grep -R "import sys"
+grep -R sys objr
+grep -R "import os" objr
