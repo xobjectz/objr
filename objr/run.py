@@ -4,22 +4,22 @@
 "runtime"
 
 
-from .broker   import Broker
-from .config   import Config
-from .object   import pjoin
-from .persist  import Persist
+import os
 
 
-SEP = "/"
+from .broker  import Broker
+from .config  import Config
+from .persist import Persist
 
 
 Cfg         = Config()
 Cfg.dis     = ""
 Cfg.mod     = "cmd,err,mod,thr"
 Cfg.opts    = ""
-Cfg.name    = __file__.split(SEP)[-2]
-Cfg.wdr     = __file__.split(Cfg.name)[0] + f".{Cfg.name}"
-Cfg.pidfile = pjoin(Cfg.wdr, f"{Cfg.name}.pid")
+Cfg.name    = __file__.split(os.sep)[-2]
+Cfg.wdr     = os.path.expanduser(f"~/.{Cfg.name}")
+Cfg.moddir  = os.path.join(Cfg.wdr, "mods")
+Cfg.pidfile = os.path.join(Cfg.wdr, f"{Cfg.name}.pid")
 
 
 Persist.workdir = Cfg.wdr
