@@ -19,7 +19,5 @@ def __dir__():
         'rss',
         'tdo',
         'thr',
-        'tmr',
-        'upt',
-        'ver'
+        'tmr'
     )
