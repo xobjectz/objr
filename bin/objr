@@ -26,8 +26,8 @@ from objr.help     import TXT
 from objr.log      import Logging
 from objr.main     import cmnd, init, scan
 from objr.parse    import parse
-from objr.persist  import Persist, skel, walk
-from objr.run      import SEP, Cfg
+from objr.persist  import Persist, skel
+from objr.run      import Cfg
 
 
 from objr import modules
