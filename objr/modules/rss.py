@@ -367,3 +367,6 @@ def syn(event):
         thr.join()
         nrs += 1
     event.reply(f"{nrs} feeds synced")
+
+
+syn.threaded = True
