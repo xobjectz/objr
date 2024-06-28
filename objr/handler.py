@@ -32,9 +32,6 @@ class Handler:
         if not func:
             evt.ready()
             return
-        if self.threaded or "threaded" in dir(func) and func.threaded:
-            evt._thr = launch(func, self, evt)
-            return
         try:
             func(self, evt)
         except Exception as ex:
