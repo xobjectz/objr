@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
-# pylint: disable=W0212,E0401
+# pylint: disable=C0413,W0212,E0401
 
 
 "main"
@@ -20,13 +20,13 @@ sys.path.insert(0, os.getcwd())
 
 
 from objr.cli      import CLI
-from objr.console  import Console
 from objr.errors   import Errors, errors
+from objr.event    import Event
 from objr.help     import TXT
 from objr.log      import Logging
 from objr.main     import cmnd, init, scan
 from objr.parse    import parse
-from objr.persist  import Persist, skel
+from objr.persist  import skel
 from objr.run      import Cfg
 
 
@@ -34,10 +34,34 @@ from objr import modules
 from objr import user
 
 
+Cfg.version = "141"
+
+
 if os.path.exists("mods"):
     import mods as MODS
 else:
     MODS = None
+
+
+class Console(CLI):
+
+    "Console"
+
+    def announce(self, txt):
+        "disable announce."
+
+    def callback(self, evt):
+        "wait for callback."
+        CLI.callback(self, evt)
+        evt.wait()
+
+    def poll(self):
+        "poll console and create event."
+        evt = Event()
+        evt.txt = input("> ")
+        evt.type = "command"
+        return evt
+
 
 
 def daemon(pidfile, verbose=False):
@@ -125,7 +149,7 @@ def main():
         init(user, modstr)
         wait = True
     elif "c" in Cfg.opts:
-        csl = Console()
+        csl = Console(print)
         if "i" in Cfg.opts:
             init(modules, Cfg.mod, Cfg.dis)
             init(user, Cfg.mod, Cfg.dis)
@@ -136,7 +160,7 @@ def main():
     scan(user, Cfg.mod, Cfg.dis)
     scan(MODS, Cfg.mod, Cfg.dis)
     if Cfg.otxt:
-        cmnd(Cfg.otxt)
+        cmnd(Cfg.otxt, print)
     if wait or "w" in Cfg.opts:
         while 1:
             time.sleep(1.0)
