@@ -5,16 +5,16 @@
 "command line interface"
 
 
+from .cache  import Cache
 from .cmds   import command
 from .react  import Reactor
-from .object import Object
 
 
 class CLI(Reactor):
 
     "CLI"
 
-    cache = Object()
+    cache = Cache()
     out = None
 
     def __init__(self, outer=None):

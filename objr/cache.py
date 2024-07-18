@@ -7,7 +7,7 @@
 from .object import Object
 
 
-class Broker:
+class Cache:
 
     "Broker"
 
@@ -26,5 +26,5 @@ class Broker:
 
 def __dir__():
     return (
-        'Broker',
+        'Cache',
     )

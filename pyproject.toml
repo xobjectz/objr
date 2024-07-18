@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "objr"
-description = "objects runtime"
+description = "object runtime"
 version = "141"
 authors = [
     {name = "xobjectz", email = "objx@proton.me"},
@@ -33,6 +33,8 @@ classifiers = [
 [tool.setuptools]
 script-files = [
     "bin/objr",
+    "bin/objrd",
+    "bin/objrsh"
 ]
 packages = [
     'objr',
