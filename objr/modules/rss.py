@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=R0903
+# pylint: disable=R0903,W0105
 
 
 "rich site syndicate"
@@ -7,10 +7,12 @@
 
 import html
 import html.parser
+import os
 import re
 import time
 import urllib
 import urllib.request
+import uuid
 import _thread
 
 
@@ -18,23 +20,36 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from ..default  import Default
-from ..object   import Object, fmt, update, values
-from ..persist  import find, last, sync
-from ..repeater import Repeater
-from ..thread   import launch
-from ..run      import broker
-from ..utils    import fntime, laps, spl
+from ..cmds   import add
+from ..dft    import Default
+from ..object import Object, construct, fmt, update
+from ..disk   import find, last, sync, whitelist
+from ..ool    import OoL, ladd
+from ..repeat import Repeater
+from ..launch import launch
+from ..log    import debug
+from ..run    import fleet
+from ..utils  import fntime, laps, spl
 
 
 def init():
     "start fetcher."
     fetcher = Fetcher()
     fetcher.start()
+    debug(f'started rss {fmt(fetcher,skip="seen")}')
     return fetcher
 
 
 DEBUG = False
+
+
+TEMPLATE = """<opml version="1.0">
+    <head>
+        <title>rssbot opml</title>
+    </head>
+    <body>
+        <outline title="rssbot opml" text="24/7 feed fetcher">"""
+
 
 
 fetchlock = _thread.allocate_lock()
@@ -45,6 +60,8 @@ class Feed(Default):
     "Feed"
 
 
+whitelist(Feed)
+
 
 class Rss(Default):
 
@@ -53,16 +70,32 @@ class Rss(Default):
     def __init__(self):
         Default.__init__(self)
         self.display_list = 'title,link,author'
+        self.insertid     = None
         self.rss          = ''
 
 
-class Seen(Default):
+whitelist(Rss)
+
+
+class Urls(OoL):
 
     "Seen"
 
     def __init__(self):
-        Default.__init__(self)
-        self.urls = []
+        OoL.__init__(self)
+        self.nrlinks = Object()
+
+def uadd(obj, url, item):
+    "urls add."
+    links = getattr(obj, url, None)
+    if links:
+        nrs = getattr(obj.nrlinks, url, None)
+        if nrs and len(links) > nrs:
+            links.pop(0)
+    ladd(obj, url, item)
+
+
+whitelist(Urls)
 
 
 class Fetcher(Object):
@@ -71,9 +104,8 @@ class Fetcher(Object):
 
     def __init__(self):
         self.dosave = False
-        self.seen = Seen()
+        self.seen = Urls()
         self.seenfn = None
-        broker.register(self)
 
     @staticmethod
     def display(obj):
@@ -103,6 +135,7 @@ class Fetcher(Object):
             counter = 0
             result = []
             for obj in reversed(getfeed(feed.rss, feed.display_list)):
+                counter += 1
                 fed = Feed()
                 update(fed, obj)
                 update(fed, feed)
@@ -111,13 +144,15 @@ class Fetcher(Object):
                     uurl = f'{url.scheme}://{url.netloc}/{url.path}'
                 else:
                     uurl = fed.link
-                if uurl in self.seen.urls:
+                if uurl in getattr(self.seen, feed.rss, []):
                     continue
-                self.seen.urls.append(uurl)
-                counter += 1
+                uadd(self.seen, feed.rss, uurl)
                 if self.dosave:
                     sync(fed)
                 result.append(fed)
+            if counter > getattr(self.seen.nrlinks, feed.rss, 0):
+                setattr(self.seen.nrlinks, feed.rss, counter)
+        self.seenfn = sync(self.seen, self.seenfn)
         if silent:
             return counter
         txt = ''
@@ -126,9 +161,7 @@ class Fetcher(Object):
             txt = f'[{feedname}] '
         for obj in result:
             txt2 = txt + self.display(obj)
-            for bot in values(broker.objs):
-                if "announce" in dir(bot):
-                    bot.announce(txt2.rstrip())
+            fleet.announce(txt2.rstrip())
         return counter
 
     def run(self, silent=False):
@@ -283,10 +316,14 @@ def dpl(event):
         event.reply('dpl <stringinurl> <item1,item2>')
         return
     setter = {'display_list': event.args[1]}
-    for _fn, feed in find("rss", {'rss': event.args[0]}):
+    for fnm, feed in find("rss", {'rss': event.args[0]}):
         if feed:
             update(feed, setter)
+            sync(feed, fnm)
     event.reply('ok')
+
+
+add(dpl)
 
 
 def nme(event):
@@ -295,10 +332,14 @@ def nme(event):
         event.reply('nme <stringinurl> <name>')
         return
     selector = {'rss': event.args[0]}
-    for _fn, feed in find("rss", selector):
+    for fnm, feed in find("rss", selector):
         if feed:
             feed.name = event.args[1]
+            sync(feed, fnm)
     event.reply('ok')
+
+
+add(nme)
 
 
 def rem(event):
@@ -306,12 +347,16 @@ def rem(event):
     if len(event.args) != 1:
         event.reply('rem <stringinurl>')
         return
-    for _fnm, feed in find("rss"):
+    for fnm, feed in find("rss"):
         if event.args[0] not in feed.rss:
             continue
         if feed:
             feed.__deleted__ = True
+            sync(feed, fnm)
     event.reply('ok')
+
+
+add(rem)
 
 
 def res(event):
@@ -319,13 +364,16 @@ def res(event):
     if len(event.args) != 1:
         event.reply('res <stringinurl>')
         return
-    for fnm, feed in find("rss", None, True):
+    for fnm, feed in find("rss", deleted=True):
         if event.args[0] not in feed.rss:
             continue
         if feed:
             feed.__deleted__ = False
             sync(feed, fnm)
     event.reply('ok')
+
+
+add(res)
 
 
 def rss(event):
@@ -354,13 +402,15 @@ def rss(event):
     event.reply('ok')
 
 
+add(rss)
+
+
 def syn(event):
     "synchronize feeds."
-    fetchers = list(broker.all("fetcher"))
-    if not fetchers:
-        event.reply("no fetcher found.")
+    if DEBUG:
         return
-    fetcher = fetchers[0][-1]
+    fetcher = Fetcher()
+    fetcher.start(False)
     thrs = fetcher.run(True)
     nrs = 0
     for thr in thrs:
@@ -369,4 +419,134 @@ def syn(event):
     event.reply(f"{nrs} feeds synced")
 
 
-syn.threaded = True
+add(syn)
+
+
+"OPML"
+
+
+class OPMLParser:
+
+    "OPMLParser"
+
+    @staticmethod
+    def getnames(line):
+        "return list of attribute names."
+        return [x.split('="')[0]  for x in line.split()]
+
+    @staticmethod
+    def getvalue(line, attr):
+        "retrieve attribute value."
+        lne = ''
+        index1 = line.find(f'{attr}="')
+        if index1 == -1:
+            return lne
+        index1 += len(attr) + 2
+        index2 = line.find('"', index1)
+        if index2 == -1:
+            index2 = line.find('/>', index1)
+        if index2 == -1:
+            return lne
+        lne = line[index1:index2]
+        if 'CDATA' in lne:
+            lne = lne.replace('![CDATA[', '')
+            lne = lne.replace(']]', '')
+            #lne = lne[1:-1]
+        return lne
+
+    @staticmethod
+    def getattrs(line, token):
+        "split for attributes."
+        index = 0
+        result = []
+        stop = False
+        while not stop:
+            index1 = line.find(f'<{token} ', index)
+            if index1 == -1:
+                return result
+            index1 += len(token) + 2
+            index2 = line.find('/>', index1)
+            if index2 == -1:
+                return result
+            result.append(line[index1:index2])
+            index = index2
+        return result
+
+    @staticmethod
+    def parse(txt, toke="outline", itemz=None):
+        "parse on outlines."
+        if itemz is None:
+            itemz = ",".join(OPMLParser.getnames(txt))
+        result = []
+        for attrz in OPMLParser.getattrs(txt, toke):
+            if not attrz:
+                continue
+            obj = Default()
+            for itm in spl(itemz):
+                if itm == "link":
+                    itm = "href"
+                val = OPMLParser.getvalue(attrz, itm)
+                if not val:
+                    continue
+                if itm == "href":
+                    itm = "link"
+                setattr(obj, itm, val.strip())
+            result.append(obj)
+        return result
+
+
+def shortid():
+    "create short id."
+    return str(uuid.uuid4())[:8]
+
+
+def attrs(obj, txt):
+    "parse attributes into the object."
+    update(obj, OPMLParser.parse(txt))
+
+
+def exp(event):
+    "export to opml."
+    event.reply(TEMPLATE)
+    nrs = 0
+    for _fn, ooo in find("rss"):
+        nrs += 1
+        obj = Default()
+        update(obj, ooo)
+        name = obj.name or f"url{nrs}"
+        txt = f'<outline name="{name}" display_list="{obj.display_list}" xmlUrl="{obj.rss}"/>'
+        event.reply(" "*12 + txt)
+    event.reply(" "*8 + "</outline>")
+    event.reply("    <body>")
+    event.reply("</opml>")
+
+
+add(exp)
+
+
+def imp(event):
+    "import opml."
+    if not event.args:
+        event.reply("imp <filename>")
+        return
+    fnm = event.args[0]
+    if not os.path.exists(fnm):
+        event.reply(f"no {fnm} file found.")
+        return
+    with open(fnm, "r", encoding="utf-8") as file:
+        txt = file.read()
+    prs = OPMLParser()
+    nrs = 0
+    insertid = shortid()
+    for obj in prs.parse(txt, 'outline', "name,display_list,xmlUrl"):
+        feed = Rss()
+        construct(feed, obj)
+        feed.rss = obj.xmlUrl
+        feed.insertid = insertid
+        sync(feed)
+        nrs += 1
+    if nrs:
+        event.reply(f"added {nrs} urls.")
+
+
+add(imp)

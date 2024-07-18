@@ -4,7 +4,8 @@
 "deferred exception handling"
 
 
-from ..errors import Errors
+from ..cmds  import add
+from ..defer import Errors
 
 
 def err(event):
@@ -19,3 +20,6 @@ def err(event):
         event.reply("no errors")
         return
     event.reply(f"found {nmr} errors.")
+
+
+add(err)

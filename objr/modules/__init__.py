@@ -1,23 +1,20 @@
 # This file is placed in the Public Domain.
+# ruff: noqa: F401
 
 
 "modules"
 
 
-from . import cmd, err, fnd, irc, log, mod, opm, rss, tdo, thr, tmr, upt, ver
+from . import cmd, err, irc, mod, rss, thr, upt
 
 
 def __dir__():
     return (
         'cmd',
         'err',
-        'fnd',
         'irc',
         'mod',
-        'log',
-        'opm',
         'rss',
-        'tdo',
         'thr',
-        'tmr'
+        'upt'
     )

@@ -5,9 +5,9 @@
 "command line interface"
 
 
-from .commands import command
-from .handler  import Handler
-from .object   import Object
+from .cmds   import command
+from .handle import Handler
+from .object import Object
 
 
 class CLI(Handler):
@@ -17,7 +17,7 @@ class CLI(Handler):
     cache = Object()
     out = None
 
-    def __init__(self, outer):
+    def __init__(self, outer=None):
         Handler.__init__(self)
         self.register("command", command)
         self.out = outer

@@ -5,17 +5,16 @@
 "persistence"
 
 
-import inspect
 import os
 import pathlib
 
 
-from .decoder import read
-from .default import Default
-from .encoder import write
-from .object  import Object, fqn, ident, search, update
-from .locks   import disklock
-from .utils   import fntime, strip
+from .decode import read
+from .dft    import Default
+from .encode import write
+from .object import Object, fqn, ident, search, update
+from .lock   import disklock
+from .utils  import fntime, strip
 
 
 class Persist(Object):
@@ -24,20 +23,6 @@ class Persist(Object):
 
     fqns = []
     workdir = ""
-
-
-    @staticmethod
-    def scan(mod) -> None:
-        "scan module for commands."
-        for _key, clz in inspect.getmembers(mod, inspect.isclass):
-            if not issubclass(clz, Object):
-                continue
-            Persist.whitelist(clz)
-
-    @staticmethod
-    def whitelist(clz):
-        "whitelist classes."
-        Persist.fqns.append(fqn(clz))
 
 
 def fetch(obj, pth):
@@ -57,8 +42,7 @@ def fns(mtc=""):
             for dname in sorted(dirs):
                 if dname.count('-') == 2:
                     ddd = os.path.join(rootdir, dname)
-                    fls = sorted(os.listdir(ddd))
-                    for fll in fls:
+                    for fll in os.scandir(ddd):
                         yield strip(os.path.join(ddd, fll))
 
 
@@ -69,7 +53,7 @@ def find(mtc, selector=None, index=None, deleted=False):
     for fnm in sorted(fns(clz), key=fntime):
         obj = Default()
         fetch(obj, fnm)
-        if not deleted and '__deleted__' in obj:
+        if not deleted and '__deleted__' in obj and obj.__deleted__:
             continue
         if selector and not search(obj, selector):
             continue
@@ -99,24 +83,34 @@ def long(name):
     "match from single name to long name."
     split = name.split(".")[-1].lower()
     res = name
-    for named in Persist.fqns:
-        if split in named.split(".")[-1].lower():
+    for named in types():
+        if split == named.split(".")[-1].lower():
             res = named
             break
     return res
 
 
+def pidfile(pid):
+    "write the pid to a file."
+    if os.path.exists(pid):
+        os.unlink(pid)
+    path = pathlib.Path(pid)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(pid, "w", encoding="utf-8") as fds:
+        fds.write(str(os.getpid()))
+
+
 def skel():
     "create directory,"
-    stor = os.path.join(Persist.workdir, "store")
-    if not os.path.exists(stor):
-        path = pathlib.Path(stor)
-        path.mkdir(parents=True, exist_ok=True)
+    stor = os.path.join(Persist.workdir, "store", "")
+    path = pathlib.Path(stor)
+    path.mkdir(parents=True, exist_ok=True)
 
 
 def store(pth=""):
     "return objects directory."
-    if not os.path.exists(Persist.workdir):
+    stor = os.path.join(Persist.workdir, "store", "")
+    if not os.path.exists(stor):
         skel()
     return os.path.join(Persist.workdir, "store", pth)
 
@@ -133,7 +127,12 @@ def sync(obj, pth=None):
 
 def types():
     "return types stored."
-    return os.listdir(store())
+    return [x.name for x in os.scandir(store())]
+
+
+def whitelist(clz):
+    "whitelist classes."
+    Persist.fqns.append(fqn(clz))
 
 
 def __dir__():
@@ -144,6 +143,7 @@ def __dir__():
         'find',
         'last',
         'long',
+        'pidfile',
         'skel',
         'store',
         'sync',
