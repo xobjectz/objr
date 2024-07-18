@@ -9,5 +9,4 @@ import setuptools
 
 
 if __name__ == "__main__":
-    setuptools.setup(scripts=["bin/objr,"])
-
+    setuptools.setup(scripts=["bin/objr", "bin/objrd", "bin/objrsh"])
