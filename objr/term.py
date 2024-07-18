@@ -21,7 +21,6 @@ class Console(CLI):
 
     def announce(self, txt):
         "echo text"
-        self.raw(txt)
 
     def callback(self, evt):
         "wait for callback."

@@ -6,11 +6,11 @@
 
 
 from .cmds   import command
-from .handle import Handler
+from .react  import Reactor
 from .object import Object
 
 
-class CLI(Handler):
+class CLI(Reactor):
 
     "CLI"
 
@@ -18,7 +18,7 @@ class CLI(Handler):
     out = None
 
     def __init__(self, outer=None):
-        Handler.__init__(self)
+        Reactor.__init__(self)
         self.register("command", command)
         self.out = outer
 

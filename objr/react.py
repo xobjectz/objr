@@ -14,7 +14,7 @@ from .object import Object
 from .launch import launch
 
 
-class Handler:
+class Reactor:
 
     "Handler"
 
