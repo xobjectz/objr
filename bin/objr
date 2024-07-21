@@ -36,11 +36,6 @@ Cfg.pidfile = os.path.join(Cfg.wdr, f"{Cfg.name}.pid")
 Persist.workdir = Cfg.wdr
 
 
-def modnames():
-    "list all modules."
-    return sorted({x for x in dir(modules) + dir(user) if not x.startswith("__")})
-
-
 def main():
     "main"
     enable(print)
